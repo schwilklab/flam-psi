@@ -1,10 +1,11 @@
 # read-data.R
 # Dylan Schwilk 2023
 
+library(ggplot2)
 library(readr)
 library(dplyr)
 library(tidyr)
-library(ggplot2)
+
 
 drydown <- read_csv("../data/shrub_drydown_test.csv")
 
@@ -15,8 +16,12 @@ drydown_long <- drydown %>% select(-note) %>%
   mutate(time = as.numeric(time), water_potential = -1*water_potential)
 
 
-drydown_long %>%
+fig1 <- drydown_long %>%
   ggplot(aes(time, water_potential, color=plantID)) +
   facet_grid(. ~ species) +
   geom_line() +
   xlab("Bench drying time (hr)") + ylab("Water potential (MPa)")
+
+fig1
+
+ggsave("../results/drydowns.png", plot=fig1, width=8, height=6, units="in")
