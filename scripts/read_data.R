@@ -18,4 +18,5 @@ drydown_long <- drydown %>% select(-note) %>%
 drydown_long %>%
   ggplot(aes(time, water_potential, color=plantID)) +
   facet_grid(. ~ species) +
-  geom_line()
+  geom_line() +
+  xlab("Bench drying time (hr)") + ylab("Water potential (MPa)")
