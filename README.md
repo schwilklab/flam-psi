@@ -1,2 +1,2 @@
 # flam-psi
-Shrub falmmability and water potential
+Shrub flammability and water potential
