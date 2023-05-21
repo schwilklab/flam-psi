@@ -1,21 +1,21 @@
 sample_id,spcode,species,lat,long,notes
 DK01,JUPI,Juniperus pinchotii,33.62838,100.8271,
-DK02,PRGL2,Prospis glandulosa,33.62835,100.82713,
+DK02,PRGL2,Prosopis glandulosa,33.62835,100.82713,
 DK03,PHTR,Rhus trilobata,33.62841,100.82719,
 DK04,JUPI,Juniperus pinchotii,33.62836,100.82717,
-DK05,PRGL2,Prospis glandulosa,33.62838,100.82719,
+DK05,PRGL2,Prosopis glandulosa,33.62838,100.82719,
 DK06,PHTR,Rhus trilobata,33.62841,100.82706,
 DK07,JUPI,Juniperus pinchotii,33.62885,100.82758,
-DK08,PRGL2,Prospis glandulosa,33.62881,100.82758,
+DK08,PRGL2,Prosopis glandulosa,33.62881,100.82758,
 DK09,PHTR,Rhus trilobata,33.62874,100.82748,
 DK10,JUPI,Juniperus pinchotii,33.6287,100.82713,
-DK11,PRGL2,Prospis glandulosa,33.62863,100.82742,
+DK11,PRGL2,Prosopis glandulosa,33.62863,100.82742,
 DK12,PHTR,Rhus trilobata,33.62862,100.82735,
 DK13,JUPI,Juniperus pinchotii,33.62888,100.8279,
-DK14,PRGL2,Prospis glandulosa,33.62889,100.82794,
+DK14,PRGL2,Prosopis glandulosa,33.62889,100.82794,
 DK15,PHTR,Rhus trilobata,33.62886,100.82789,
 DK16,JUPI,Juniperus pinchotii,33.62868,100.82787,
-DK17,PRGL2,Prospis glandulosa,33.62867,100.82783,
+DK17,PRGL2,Prosopis glandulosa,33.62867,100.82783,
 DK18,PHTR,Rhus trilobata,33.62865,100.82786,
 PHTR1,PHTR,Rhus trilobata,,,This is an extra sample from one of the Rhus trilobata because we collected bigger branch and this one is the left over
-PRGL21,PRGL2,Prospis glandulosa,,,This is an extra sample from one of the mesquite because we collected bigger branch and this one is the left over
+PRGL21,PRGL2,Prosopis glandulosa,,,This is an extra sample from one of the mesquite because we collected bigger branch and this one is the left over
