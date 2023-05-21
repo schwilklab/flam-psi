@@ -1,4 +1,4 @@
-sample_id,species_id,species,lat,long,notes
+sample_id,spcode,species,lat,long,notes
 DK01,JUPI,Juniperus pinchotii,33.62838,100.8271,
 DK02,PRGL2,Prospis glandulosa,33.62835,100.82713,
 DK03,PHTR,Rhus trilobata,33.62841,100.82719,
