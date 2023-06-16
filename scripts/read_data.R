@@ -32,6 +32,7 @@ species <- read_csv("./data/species.csv") %>%
 samples <-  read_csv("./data/samples.csv") %>% select(sample_id, spcode)
 
 water_potentials <- read_csv("./data/water_potentials.csv") %>%
+  mutate(wp = -wp) %>%
   select(sample_id, wp)
 
 fmc <- read_csv("./data/fmc.csv") %>%
@@ -49,6 +50,9 @@ burn_trials <- read_csv("./data/burn_trials.csv") %>%
   select(sample_id, pre_combustion, ignition_delay, flame_duration,
          smoke_duration, flame_height, heat_release_j, vol_burned,
          self_ignition, self_ig_start)
+
+# Correct heat release to set lowest value at 0 (all relative anyway)
+burn_trials$heat_release_j <- burn_trials$heat_release_j - min(burn_trials$heat_release_j, na.rm=TRUE)
 
 burn_trials_wx <- read_csv("./data/burn_trials_wx.csv") %>% 
   mutate(massloss = (mass_pre - mass_post)/mass_pre) %>%

@@ -15,31 +15,11 @@ source("./scripts/read_data.R")
 hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 alldata <- left_join(alldata, hobos_wider)
 
-library(ggplot2)
-ggplot(alldata, aes(wp, fmc, color=spcode)) + geom_point() + geom_smooth(method="lm")
-
-ggplot(alldata, aes(wp, massloss, color=spcode)) + geom_point() + geom_smooth(method="lm")
-
-ggplot(alldata, aes(wp, vol_burned, color=spcode)) + geom_point() + geom_smooth(method="lm")
-
-ggplot(filter(alldata, spcode!= "JUPI"), aes(wp, flame_duration, color=spcode)) + geom_point() + geom_smooth(method="lm")
-
-ggplot(alldata, aes(mass_pre, ignition_delay, color=spcode)) + geom_point()
-
-
-#source("./scripts/flam_pca.R") 
-#source("./scripts/analysis.R")
-
-# run alldata from the 2021
-#source("./scripts/read_data_2021.R")
-
-# read hobos data for 2021
-#source("./scripts/hobo_flam_pca_2021.R")
-
-# read herbivore analysis script
-
-#source("./scripts/herbivore_analysis.R")
+# produce pca_data object
+source("./scripts/flam_pca.R")
+alldata <- alldata %>%
+  left_join(dplyr::select(pca_data, sample_id, PC1, PC2), by = "sample_id")
 
 # figures
-#source("./scripts/ms_figures.R")
+source("./scripts/figs.R")
 
