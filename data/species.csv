@@ -1,5 +1,5 @@
-"genus","scientific_name","common_name","spcode","usda_url"
-"Juniperus L.","Juniperus pinchotii","Redberry Juniper","JUPI","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_jupi.pdf"
-"Prosopis L.","Prosopis glandulosa","Honey Mesquite","PRGL2","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_prgl2.pdf"
-"Ziziphus Mill.","Ziziphus obtusifolia","Lotebush ","ZIOB",
-"Rhus L.","Rhus trilobata","Skunkbush sumac","RHTR","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_rhtr.pdf"
+"genus","specific_epithet","scientific_name","common_name","spcode","usda_url"
+"Juniperus","pinchotii","Juniperus pinchotii","Redberry Juniper","JUPI","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_jupi.pdf"
+"Prosopis","glandulosa","Prosopis glandulosa","Honey Mesquite","PRGL2","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_prgl2.pdf"
+"Ziziphus","obtusifolia","Ziziphus obtusifolia","Lotebush ","ZIOB",
+"Rhus","trilobata","Rhus trilobata","Skunkbush sumac","RHTR","https://plants.usda.gov/DocumentLibrary/plantguide/pdf/cs_rhtr.pdf"
