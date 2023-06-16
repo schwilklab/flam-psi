@@ -7,6 +7,7 @@
 # software.
 
 TZ = "CST6CDT"
+DATA_CACHE_DIR <- "./results"
 
 library(stringr)
 library(lubridate)
@@ -217,7 +218,7 @@ dim(hobos_wider)
 
 
 ## Save RDS data. TODO
-# saveRDS(hobos_wider, file.path(DATA_CACHE_DIR, "hobos_wider"))
+saveRDS(hobos_wider, file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 
 ########################################################################
 # Cleaning the environment
