@@ -168,54 +168,6 @@ hobos_wider <- hobo_temp_sum %>%
 
 dim(hobos_wider)
 
-##############################################################################
-# The remaining code is only for plotting purpose Plotting the summarized data
-# Merge the hobo summary data with alldata_2022
-#############################################################################
-
-## hobo_plots <- alldata_2022 %>%
-##   right_join(hobo_temp_sum, by = "label") %>%
-##   filter( sample_id != "NA")
-
-## DWS: this produces a warning.
-
-
-
-########################################################################
-# Plot for the summary
-########################################################################
-
-## ggplot(hobo_plots,aes(field_taxon, dur_100, color = field_taxon))+
-##   geom_jitter(width = 0)+
-##   facet_grid(.~position)+
-##   theme_bw()+
-##   theme(axis.text.x = element_text(angle = 45,
-##                                    hjust = 1,
-##                                    face = "italic"))+
-##   labs(x = "Display name",
-##        y=expression(paste("Duration over ",100^degree*C, " in (s)")))
-
-
-## ggplot(hobo_plots,aes(field_taxon, degsec_100, color = field_taxon))+
-##   geom_jitter(width = 0)+
-##   facet_grid(.~position)+
-##   theme_bw()+
-##   theme(axis.text.x = element_text(angle = 45,
-##                                    hjust = 1,
-##                                    face = "italic"))+
-##   labs(x = "Display name",
-##   y = expression(Temperature ~ integration ~ (degree~C %.% s ) ) )
-
-## ggplot(hobo_plots,aes(field_taxon, peak_temp, color = field_taxon))+
-##   geom_jitter(width = 0)+
-##   facet_grid(.~position)+
-##   theme_bw()+ 
-##   theme(axis.text.x = element_text(angle = 45,
-##                                    hjust = 1, 
-##                                    face = "italic"))+
-##   labs(x="Display name",
-##        y=expression("Peak temperature " ( degree*C)))
-
 
 ## Save RDS data. TODO
 saveRDS(hobos_wider, file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))

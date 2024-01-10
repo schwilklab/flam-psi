@@ -1,15 +1,15 @@
 # flam_pca.R
 
 # Shrub flammability project using summer 2022 data. PCA analysis uses prcomp()
-# for PCA and factoextra for figures
 
-library(factoextra)
 
 ###############################################################################
+# AM: Merging the hobos and all data 
 # PCA analysis. Don;t use massloss because it is covaries too strongly with wp
 # (more mass to lose)_
 ###############################################################################
 
+alldata <- left_join(alldata, hobos_wider)
 
 pca_data <- alldata %>%
   dplyr::select(sample_id, heat_release_j, ##, massloss,
@@ -19,6 +19,7 @@ pca_data <- alldata %>%
 
 
 dim(pca_data)
+
 any(is.na(pca_data)) 
 
 flam_pca <- prcomp(pca_data[,-1], scale=TRUE)
@@ -28,32 +29,31 @@ flam_loadings <- flam_pca$rotation[ ,1:2]
 flam_loadings
 biplot(flam_pca)
 
-##############################################################################
-## Scree plot, eigenvalue and variables info
-###############################################################################
-
-eig_val <- get_eigenvalue(flam_pca) 
-eig_val
-variables_info <- get_pca_var(flam_pca) # Variables information
-variables_info$coord[ ,1:2] # Coordinates of variables
-head(variables_info$contrib) # Contributions of variables
 
 ###############################################################################
-# Assigning PC1 to pca_data_2022 and then merging with alldata_2022
-# data set for doing rest of the analysis.
+## Assigning PC1 and PC2 to pca data and  then merging with alldata
+## to get the final data which will be used for rest of the 
+# the statistical part and figures
 ###############################################################################
 
 pca_data$PC1 <- flam_pca$x[ ,1]
 pca_data$PC2 <- flam_pca$x[ ,2]
 
+pca_data <- pca_data %>%
+  select(sample_id, PC1, PC2)
+
+
+final_data <- left_join(alldata, pca_data) %>%
+  filter(sample_id %in% pca_data$sample_id)
+
+dim(final_data)
 
 
 ###############################################################################
-# Cleaning the environment
+# Cleaning the environment, leaving the alldatas for exploratory figures
 ###############################################################################
 
-## rm( "flam_pca_2022", "flam_loadings",
-##    "eig_val", "variables_info" ,"contributor_pc1_2022",
-##    "contributor_pc2_2022", 
-##    "var_contr_by_cos2")
+rm("burn_trials",
+   "flam_loadings", "flam_pca", "hobos_wider",
+   "pca_data")
 
