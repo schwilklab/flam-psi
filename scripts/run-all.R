@@ -1,25 +1,47 @@
 #!/usr/bin/Rscript --vanilla
 
 # run-all.R
+# Shrub Flammability project
+# Dylan Schwilk, Azaj Mahmud
+# February 2023
+
+# This steering script sources all of the non stand-lone code below to read in
+# data, conduct PCAs, fit models, build tables and figures.
 
 DATA_CACHE_DIR <- "./results"
 
-# read, clean and merged all the morphological and flammability traits data.
-# Produces "alldata"
+#############################################################################
+# read, clean and merged all the data Produces "alldata"
+#############################################################################
+
 source("./scripts/read_data.R")
 
-# script that reads the thermocouple data logger data during burning. Produces
-# "hobos_wider"
-#source("./scripts/read_hobos.R")  ## Do this once
-## After running the above once, just read saved data:
-hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
-alldata <- left_join(alldata, hobos_wider)
+#############################################################################
+# Read hobos data
+############################################################################
 
-# produce pca_data object
+source("./scripts/read_hobos.R")
+
+
+###########################################################################
+# produce pca_data object, and out put were assigned to the alldata, 
+# removed all the NAs and named it final_data, the final_data
+# contains 137 observation without any NAs
+##########################################################################
+
 source("./scripts/flam_pca.R")
-alldata <- alldata %>%
-  left_join(dplyr::select(pca_data, sample_id, PC1, PC2), by = "sample_id")
 
-# figures
-source("./scripts/figs.R")
+
+#########################################################################
+# Exploratory  figures done by Dr. Schwilk, this scripts is used
+# alldata which has 148 observations and some of columns have NA
+# and will return  rows containing non-finite values (`stat_smooth()`). 
+# rows containing missing values (`geom_point()`). 
+# Removed 3 rows containing non-finite values (`stat_smooth()`). 
+# Removed 3 rows containing missing values (`geom_point()`)
+########################################################################
+
+source("./scripts/exploratory_figures.R")
+
+source("./scripts/analysis.R")
 
