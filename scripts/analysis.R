@@ -79,14 +79,14 @@ summary(fmc_withoutself_ignition_kr_model)
 
 ##################################################################################
 # Now fmc vs temperature integration since it had the highest
-# loading in PC1 for simples which ignited within 20 seconds!
+# loading in PC1 for samples which ignited within 20 seconds!
 ##################################################################################
 
 filtered_data <- final_data %>%
   filter(ignition_delay <= 20)
 
 fmc_heat_release_table_model <- lme4::lmer(degsec_100 ~ fmc*spcode +
-                                         (1|spcode), data = final_data)
+                                         (1|spcode), data = filtered_data)
 
 fmc__heat_release_anova <- car::Anova(fmc_heat_release_table_model, type = 2, 
                             test.statistic = "F")
