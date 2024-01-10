@@ -10,7 +10,7 @@ wp_fmc_anova_table_model <- lme4::lmer(fmc ~  wp*spcode +
 
 anova(wp_fmc_anova_table_model)
 
-wp_fmc_kr_model <- afex::mixed(fmc ~  wp:spcode +
+wp_fmc_kr_model <- afex::mixed(fmc ~  wp*spcode +
                               (1|spcode), data = final_data,
                             method = "KR", REML = TRUE)
 
