@@ -7,7 +7,7 @@ source("./scripts/ggplot_theme.R")
 
 short_ignite <- filter(alldata, ignition_delay <= 20)
 
-fig1 <- ggplot(alldata, aes(wp, 100*fmc, color=display_name)) +
+fig1 <- ggplot(alldata, aes(wp, fmc, color=display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
   ylab("Moisture content (%)") +
@@ -34,7 +34,7 @@ fig2 <- ggplot(alldata, aes(wp, heat_release_j, color=display_name)) +
         axis.text = element_text(size = smsize))
 ggsave("./results/fig2.pdf", plot=fig2, width=col1, height=col1, units="cm")
 
-fig3 <- ggplot(alldata, aes(100*fmc, heat_release_j, color=display_name)) +
+fig3 <- ggplot(alldata, aes(fmc, heat_release_j, color=display_name)) +
   dws_point + bestfit +
   xlab("Moisture content (%)") +
   ylab("Heat transfer (J)") +
@@ -48,7 +48,7 @@ ggsave("./results/fig3.pdf", plot=fig3, width=col1, height=col1, units="cm")
 ggsave("./results/fig3.png", plot=fig3, width=col1, height=col1, units="cm")
 
 
-fig4 <- ggplot(alldata, aes(100*fmc, PC1, color=display_name)) +
+fig4 <- ggplot(alldata, aes(fmc, PC1, color=display_name)) +
   dws_point + bestfit +
   xlab("Moisture content (%)") +
   ylab("Flammability (PC1)") +
