@@ -53,7 +53,6 @@ dim(final_data)
 # Cleaning the environment, leaving the alldatas for exploratory figures
 ###############################################################################
 
-rm("burn_trials",
-   "flam_loadings", "flam_pca", "hobos_wider",
+rm("burn_trials", "flam_loadings", "hobos_wider",
    "pca_data")
 

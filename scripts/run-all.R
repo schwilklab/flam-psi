@@ -47,3 +47,5 @@ source("./scripts/analysis.R")
 
 source("./scripts/segmented.R")
 
+source("./scripts/figures.R")
+

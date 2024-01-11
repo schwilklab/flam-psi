@@ -41,7 +41,7 @@ wp_fmc_anova_coefficients <- summary(wp_fmc_anova_table_model)$coefficients
 wp_fmc_coeff <- xtable::xtable(wp_fmc_anova_coefficients, digits = 3)
 
 
-wp_fmc_kr_model <- afex::mixed(fmc ~  wp:spcode +
+wp_fmc_kr_model <- afex::mixed(fmc ~ wp:spcode +
                                  (1|spcode), data = final_data,
                                method = "KR", REML = TRUE)
 
@@ -90,7 +90,7 @@ wp_ignition_anova_coefficients <- summary(wp_ignition_table_model)$coefficients
 wp_ignition_coeff <- xtable::xtable(wp_ignition_anova_coefficients, digits = 3)
 
 
-wp_ignition_kr_model <- afex::mixed(ignition_delay ~ wp:spcode  +
+wp_ignition_kr_model <- afex::mixed(ignition_delay ~  wp:spcode  +
                                        (1|spcode), data = final_data,
                                      method = "KR", REML = TRUE)
 
