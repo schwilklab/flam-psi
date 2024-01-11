@@ -44,20 +44,20 @@ species <- species %>%
   dplyr::select(spcode, display_name, scientific_name)
 
 samples <-  samples %>% 
-  select(sample_id, spcode)
+  dplyr::select(sample_id, spcode)
 
 water_potentials <- water_potentials %>%
   mutate(wp = -wp) %>%
-  select(sample_id, wp)
+  dplyr::select(sample_id, wp)
 
 fmc <- fmc %>%
   mutate(fmc=((fresh_mass-dry_mass)/dry_mass)*100) %>%
   mutate(fmc = round(fmc, 2)) %>%
-  select(sample_id, fmc)
+  dplyr::select(sample_id, fmc)
 
 burn_trials_wx <- burn_trials_wx %>% 
   mutate(massloss = (mass_pre - mass_post)/mass_pre) %>%
-  select(sample_id, rh, temperature, wind_speed, mass_pre, massloss)
+  dplyr::select(sample_id, rh, temperature, wind_speed, mass_pre, massloss)
 
 ###############################################################################
 ## burn trials
@@ -68,7 +68,7 @@ burn_trials <- read_csv("./data/burn_trials.csv") %>%
          heat2 = (disc2_post - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
          heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
          pre_combustion = pre_combustion=="yes" ) %>%
-  select(sample_id, pre_combustion, ignition_delay, flame_duration,
+  dplyr::select(sample_id, pre_combustion, ignition_delay, flame_duration,
          smoke_duration, flame_height, heat_release_j, vol_burned,
          self_ignition, self_ig_start)
 

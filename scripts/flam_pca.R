@@ -40,7 +40,7 @@ pca_data$PC1 <- flam_pca$x[ ,1]
 pca_data$PC2 <- flam_pca$x[ ,2]
 
 pca_data <- pca_data %>%
-  select(sample_id, PC1, PC2)
+  dplyr::select(sample_id, PC1, PC2)
 
 
 final_data <- left_join(alldata, pca_data) %>%
