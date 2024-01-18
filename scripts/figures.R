@@ -35,7 +35,7 @@ ggsave("./results/wp_fmc.pdf", plot=wp_fmc_plot, width=col1, height=col1, units=
 # Now water potential vs ignition delay plot
 ######################################################################################
 
-wp_ignition_plot <- ggplot(final_data, aes(wp, ignition_delay, color=display_name)) +
+wp_ignition_plot <- ggplot(without_self_ignition, aes(wp, ignition_delay, color=display_name)) +
   dws_point +
   xlab("Water potential (MPa)") +
   ylab("Ignition delay time (s)") +
@@ -45,12 +45,12 @@ wp_ignition_plot <- ggplot(final_data, aes(wp, ignition_delay, color=display_nam
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize)) +
-  geom_abline(intercept = coef(summary(wp_ignition_kr_model))[1], 
-              slope = coef(summary(wp_ignition_kr_model))[2], size = 1.5, color = schwilkcolors[1]) +
-  geom_abline(intercept = coef(summary(wp_ignition_kr_model))[1], 
-              slope = coef(summary(wp_ignition_kr_model))[3], size = 1.5, alpha = 0.8, color = schwilkcolors[2]) +
-  geom_abline(intercept = coef(summary(wp_ignition_kr_model))[1], 
-              slope = coef(summary(wp_ignition_kr_model))[4], size = 1.5, alpha = 1.1, color = schwilkcolors[3])
+  geom_abline(intercept = coef(summary(wp_withoutself_ignition_kr_model))[1], 
+              slope = coef(summary(wp_withoutself_ignition_kr_model))[2], size = 1.5, color = schwilkcolors[1]) +
+  geom_abline(intercept = coef(summary(wp_withoutself_ignition_kr_model))[1], 
+              slope = coef(summary(wp_withoutself_ignition_kr_model))[3], size = 1.5, alpha = 0.8, color = schwilkcolors[2]) +
+  geom_abline(intercept = coef(summary(wp_withoutself_ignition_kr_model))[1], 
+              slope = coef(summary(wp_withoutself_ignition_kr_model))[4], size = 1.5, alpha = 1.1, color = schwilkcolors[3])
 
 
 ggsave("./results/wp_ignition.pdf", plot=wp_ignition_plot, width=col1, height=col1, units="cm")
