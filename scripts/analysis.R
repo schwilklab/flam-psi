@@ -8,8 +8,6 @@
 # within 20 seconds
 ###############################################################################
 
-final_data$spcode <- as.factor(final_data$spcode)
-
 without_self_ignition <- final_data %>%
   filter(ignition_delay != 0)
 
@@ -20,6 +18,14 @@ filtered_data <- final_data %>%
   filter(ignition_delay <= 20)
 
 dim(filtered_data) # 96
+
+###############################################################################
+# Transformation of ignition delay due to zero boundedness
+###############################################################################
+
+final_data$ignition_delay <- log(final_data$ignition_delay + 1)
+
+without_self_ignition$ignition_delay <- log(without_self_ignition$ignition_delay + 1)
 
 ################################################################################
 # Initially water potential and fmc relationship
@@ -61,9 +67,25 @@ fmc_ignition_model <- lme4::lmer(ignition_delay ~ fmc +
 wp_ignition_model <- lme4::lmer(ignition_delay ~ wp +
                                         (1|spcode), data = final_data)
 
-AIC(fmc_ignition_model, wp_ignition_model) # wp is better (wp = 1085.6,
+AICc(fmc_ignition_model, wp_ignition_model) # wp is better (wp = 1085.6,
 # fmc = 1102.0)
 
+#########################################################################
+# Now without self ignition
+#########################################################################
+
+fmc_ignition_model_withoutselfig <- lme4::lmer(ignition_delay ~ fmc +
+                                   (1|spcode), data = without_self_ignition)
+
+
+wp_ignition_model_withoutselfig <- lme4::lmer(ignition_delay ~ wp +
+                                  (1|spcode), data = without_self_ignition)
+
+AICc(fmc_ignition_model_withoutselfig, wp_ignition_model_withoutselfig) # wp is better than fmc
+
+###########################################################################
+# Now for temperature integration, initially for final data
+###########################################################################
 
 fmc_degsec_model <- lme4::lmer(degsec_100 ~ fmc +
                                    (1|spcode), data = final_data)
@@ -73,8 +95,21 @@ wp_degsec_model <- lme4::lmer(degsec_100 ~ wp +
                                   (1|spcode), data = final_data)
 
 
-AIC(fmc_degsec_model, wp_degsec_model) # water potential is better
-# fmc = 3224.9 and wp = 3218.2
+AICc(fmc_degsec_model, wp_degsec_model) # water potential is better than fmc
+
+#############################################################################
+# Now for samples those ignited within tweenty seconds
+#############################################################################
+
+fmc_degsec_model_within20s <- lme4::lmer(degsec_100 ~ fmc +
+                                 (1|spcode), data = filtered_data)
+
+
+wp_degsec_model_within20se <- lme4::lmer(degsec_100 ~ wp +
+                                (1|spcode), data = filtered_data)
+
+
+AICc(fmc_degsec_model_within20s, wp_degsec_model_within20se) # wp is bteer than fmc
 
 #############################################################################
 # Now wp and ignition delay
@@ -85,8 +120,11 @@ wp_ignition_table_model <- lme4::lmer(ignition_delay ~ wp + wp:spcode +
 
 wp__ignition_anova <- car::Anova(wp_ignition_table_model, type = 3, 
                             test.statistic = "F")
+
 wp_ignition_xtable <-  xtable::xtable(wp__ignition_anova, digits = 3)
+
 wp_ignition_anova_coefficients <- summary(wp_ignition_table_model)$coefficients
+
 wp_ignition_coeff <- xtable::xtable(wp_ignition_anova_coefficients, digits = 3)
 
 
@@ -108,7 +146,9 @@ wp__withoutself_ignition_anova <- car::Anova(wp_withoutself_ignition_table_model
                                               type = 3, test.statistic = "F")
 
 wp_withoutself_ignition_xtable <-  xtable::xtable(wp__withoutself_ignition_anova, digits = 3)
+
 wp_withoutself_ignition_anova_coefficients <- summary(wp_withoutself_ignition_table_model)$coefficients
+
 wp_withoutself_ignition_coeff <- xtable::xtable(wp_withoutself_ignition_anova_coefficients, digits = 3)
 
 
