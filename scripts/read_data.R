@@ -85,6 +85,8 @@ burn_trials <- left_join(burn_trials, burn_trials_wx)
 alldata <- left_join(samples, species) %>% left_join(water_potentials) %>%
   left_join(fmc) %>% left_join(burn_trials)
 
+alldata$spcode <- as.factor(alldata$spcode)
+
 
 dim(alldata)
 
