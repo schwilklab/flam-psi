@@ -67,10 +67,11 @@ burn_trials <- read_csv("./data/burn_trials.csv") %>%
   mutate(heat1 = (disc1_post - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
          heat2 = (disc2_post - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
          heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
-         pre_combustion = pre_combustion=="yes" ) %>%
+         pre_combustion = pre_combustion=="yes" ,
+         pre_burning_temp = (disc1_pre + disc2_pre)/2) %>%
   dplyr::select(sample_id, pre_combustion, ignition_delay, flame_duration,
          smoke_duration, flame_height, heat_release_j, vol_burned,
-         self_ignition, self_ig_start)
+         self_ignition, self_ig_start, pre_burning_temp)
 
 # Correct heat release to set lowest value at 0 (all relative anyway)
 burn_trials$heat_release_j <- burn_trials$heat_release_j - min(burn_trials$heat_release_j, na.rm=TRUE)
