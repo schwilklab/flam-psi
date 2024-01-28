@@ -31,6 +31,17 @@ source("./scripts/read_hobos.R")
 
 source("./scripts/flam_pca.R")
 
+source("./scripts/hobo_bench_drying.R")
+
+source("./scripts/analysis.R")
+
+source("./scripts/segmented.R")
+
+source("./scripts/ggplot_theme.R")
+
+source("./scripts/figures.R")
+
+source("./scripts/hobo_bench_drying.R")
 
 #########################################################################
 # Exploratory  figures done by Dr. Schwilk, this scripts is used
@@ -43,9 +54,4 @@ source("./scripts/flam_pca.R")
 
 source("./scripts/exploratory_figures.R")
 
-source("./scripts/analysis.R")
-
-source("./scripts/segmented.R")
-
-source("./scripts/figures.R")
 
