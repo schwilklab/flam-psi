@@ -25,8 +25,11 @@ any(is.na(pca_data))
 flam_pca <- prcomp(pca_data[,-1], scale=TRUE)
 
 summary(flam_pca)
+
 flam_loadings <- flam_pca$rotation[ ,1:2] 
+
 flam_loadings
+
 biplot(flam_pca)
 
 
