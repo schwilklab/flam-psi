@@ -41,7 +41,6 @@ source("./scripts/ggplot_theme.R")
 
 source("./scripts/figures.R")
 
-
 #########################################################################
 # Exploratory  figures done by Dr. Schwilk, this scripts is used
 # alldata which has 148 observations and some of columns have NA

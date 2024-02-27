@@ -80,7 +80,6 @@ summary(prgl2_seg)
 
 AIC(lm_prgl2, prgl2_seg) 
 
-
 ####################################################################################
 # Now the wp vs temerature integration for Prosopis glandulosa
 ###################################################################################
@@ -132,6 +131,78 @@ rhtr_degsec_seg <- segmented::segmented(lm_degsec_rhtr, seg.Z = ~ wp)
 
 AIC(lm_degsec_rhtr, rhtr_degsec_seg) # lm is better than seg
 
+
+
+#######################################################################################
+# Now fmc
+######################################################################################
+
+segmented_jupi_fmcig <- final_data %>%
+  filter(spcode == "JUPI") %>%
+  filter(self_ignition != 1)
+
+dim(segmented_jupi_fmcig)
+
+
+segmented_jupi_fmc_degsec <- filtered_data %>%
+  filter(spcode == "JUPI")
+
+dim(segmented_jupi_fmc_degsec)
+
+
+lm_jupi_fmc <- lm(ignition_delay ~ fmc, data = segmented_jupi_fmcig)
+
+jupi_seg_fmc <- segmented::segmented(lm_jupi_fmc, seg.Z = ~ fmc)
+
+
+AIC(lm_jupi_fmc, jupi_seg_fmc) 
+
+####################################################################################
+# Now the  temperature integration 
+###################################################################################
+
+lm_fmc_degsec_jupi <- lm(degsec_100 ~ fmc, data = segmented_jupi_fmc_degsec)
+
+jupi_fmc_degsec_segmented <- segmented::segmented(lm_fmc_degsec_jupi, seg.Z = ~ fmc)
+
+AIC(lm_fmc_degsec_jupi, jupi_fmc_degsec_segmented) 
+
+
+
+predicted_model_data_jp_fmc <- data.frame(fmc = segmented_jupi_fmcig$fmc, ignition_delay = fitted(jupi_seg_fmc))
+
+jupi_threshold_fmcig <- ggplot(segmented_jupi_fmcig, aes(x = fmc, y = ignition_delay)) + 
+  geom_line(data = predicted_model_data_jp_fmc, size = 1.2) +
+  geom_point(data = segmented_jupi_fmcig) +
+  dws_point +
+  xlab("Moisture content (%)") +
+  ylab("Ignition delay time (s)") + 
+  pubtheme +
+  geom_vline(xintercept = confint(jupi_seg_fmc)[2], linetype = "dashed", size = 1) +
+  geom_vline(xintercept = confint(jupi_seg_fmc)[3], linetype = "dashed", size = 1) +
+  geom_rect(aes(xmin = confint(jupi_seg_fmc)[2], xmax = confint(jupi_seg_fmc)[3], ymin = -Inf, ymax = Inf),
+            fill = "lightsteelblue", alpha = 0.005)
+
+ggsave("./results/jupi_threshold_fmcig.pdf", plot = jupi_threshold_fmcig, 
+       height = 180, width = 170, units = "mm", dpi = 300) 
+
+predicted_model_data_jp_fmc_degsec <- data.frame(fmc = segmented_jupi_fmc_degsec$fmc,  
+                                                 degsec_100 = fitted(jupi_fmc_degsec_segmented))
+
+jupi_threshold_fmc_degsec <- ggplot(segmented_jupi_fmc_degsec, aes(x = fmc, y = degsec_100)) + 
+  geom_line(data = predicted_model_data_jp_fmc_degsec, size = 1.2) +
+  geom_point(data = segmented_jupi_fmc_degsec) +
+  dws_point +
+  xlab("Moisture content (%)") +
+  ylab(expression(Temperature ~ integration ~ (degree~C %.% s ) )) + 
+  pubtheme +
+  geom_vline(xintercept = confint(jupi_fmc_degsec_segmented)[2], linetype = "dashed", size = 1) +
+  geom_vline(xintercept = confint(jupi_fmc_degsec_segmented)[3], linetype = "dashed", size = 1) +
+  geom_rect(aes(xmin = confint(jupi_fmc_degsec_segmented)[2], xmax = confint(jupi_fmc_degsec_segmented)[3], ymin = -Inf, ymax = Inf),
+            fill = "lightsteelblue", alpha = 0.005)
+
+ggsave("./results/jupi_threshold_fmc_degsec.pdf", plot = jupi_threshold_fmc_degsec, 
+       height = 180, width = 170, units = "mm", dpi = 300) 
 
 ##########################################################################################
 # Cleaning the environment
