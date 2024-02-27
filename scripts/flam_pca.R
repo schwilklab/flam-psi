@@ -51,9 +51,14 @@ final_data <- left_join(alldata, pca_data) %>%
 
 dim(final_data)
 
+filtered_data <- final_data %>%
+  filter(self_ignition != 1) %>%
+  filter(sample_id %in% filtered_sample_id)
+  
+dim(filtered_data)
 
 ###############################################################################
-# Cleaning the environment, leaving the alldatas for exploratory figures
+# Cleaning the environment, leaving the alldata for exploratory figures
 ###############################################################################
 
 rm("burn_trials", "flam_loadings", "hobos_wider",
