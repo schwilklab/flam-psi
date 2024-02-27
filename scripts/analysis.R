@@ -3,29 +3,6 @@
 
 
 ################################################################################
-# Initially creating two subset of final_data because we need them later
-# Initially samples without self ignition and then samples which ignited 
-# within 20 seconds
-###############################################################################
-
-without_self_ignition <- final_data %>%
-  filter(ignition_delay != 0)
-
-dim(without_self_ignition) # 132
-
-
-filtered_data <- final_data %>%
-  filter(ignition_delay <= 20)
-
-dim(filtered_data) # 96
-
-###############################################################################
-# Transformation of ignition delay due to zero boundedness
-###############################################################################
-
-without_self_ignition$ignition_delay <- log(without_self_ignition$ignition_delay + 1)
-
-################################################################################
 # Initially water potential and fmc relationship
 ################################################################################
 
