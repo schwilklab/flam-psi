@@ -91,8 +91,32 @@ alldata$spcode <- as.factor(alldata$spcode)
 
 dim(alldata)
 
+################################################################################
+# Initially creating two subset of final_data because we need them later
+# Initially samples without self ignition and then samples which ignited 
+# within 20 seconds
+###############################################################################
+
+without_self_ignition <- alldata %>%
+  filter(ignition_delay != 0)
+
+dim(without_self_ignition) # 143
+
+
+filtered_data <- without_self_ignition %>%
+  filter(ignition_delay <= 20)
+
+dim(filtered_data)
+
+filtered_sample_id <- filtered_data$sample_id
+
+alldata$ignition_delay <- log(alldata$ignition_delay + 1)
+
+without_self_ignition <- without_self_ignition %>%
+  mutate(ignition_delay = log(ignition_delay + 1))
+
 ######################################################################################
-## Cleaning up work space, only keeping the alldata_
+## Cleaning up work space, only keeping the alldata
 ######################################################################################
 
 rm("burn_trials", "burn_trials_wx", "fmc", "MASS_DISK_1", "MASS_DISK_2", "samples",
