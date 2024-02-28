@@ -4,44 +4,46 @@
 # Initially water potential and fmc relationship
 ################################################################################
 
-wp_fmc_anova_table_model <- lme4::lmer(fmc ~  wp + wp:spcode +
-                                         (1|spcode), data = final_data)
+wp_fmc_model <- lm(fmc ~  wp*spcode, data = final_data)
 
-anova(wp_fmc_anova_table_model)
+anova(wp_fmc_model)
 
-
-wp_fmc__anova <- car::Anova(wp_fmc_anova_table_model, type = 3, 
-                                           test.statistic = "F")
-
-wp_fmc_xtable <-  xtable::xtable(wp_fmc__anova, digits = 3)
-
-wp_fmc_anova_coefficients <- summary(wp_fmc_anova_table_model)$coefficients
-
-wp_fmc_coeff <- xtable::xtable(wp_fmc_anova_coefficients, digits = 3)
-
-wp_fmc <- afex::mixed(fmc ~ wp +
-                        (1|spcode), data = final_data,
-                      method = "KR", REML = TRUE)
-summary(wp_fmc)
-
-wp_fmc_kr_model <- afex::mixed(fmc ~ wp:spcode +
-                                 (1|spcode), data = final_data,
-                               method = "KR", REML = TRUE)
-
-
-summary(wp_fmc_kr_model)
+summary(wp_fmc_model)
 
 #############################################################################
 # Does the relationship between ignition delay and water status 
-# varies among species?
+# varies among species? 
 #########################################################################
 
-fmc_wp_species_ignition <- lm(ignition_delay ~ fmc*wp*spcode, data = filter(final_data, self_ignition != 1))
-
-summary(fmc_wp_species_ignition)
+fmc_wp_species_ignition <- lm(ignition_delay ~ fmc*wp*spcode, data = final_data)
 
 anova(fmc_wp_species_ignition)
 
+summary(fmc_wp_species_ignition)
+
+############################################################################
+# Samples without self ignition
+##########################################################################
+
+fmc_wp_species_ignition_withoutselfig <- lm(ignition_delay ~ fmc*wp*spcode, 
+                                            data = filter(final_data, self_ignition != 1))
+
+anova(fmc_wp_species_ignition_withoutselfig)
+
+summary(fmc_wp_species_ignition_withoutselfig)
+
+##############################################################################
+# which one is better in predicting ignitibility
+# between fmc and wp?
+##############################################################################
+
+wp_species_ignition <- lm(ignition_delay ~ wp*spcode, data = filter(final_data, self_ignition != 1))
+
+fmc_species_ignition <- lm(ignition_delay ~ fmc*spcode, data = filter(final_data, self_ignition != 1))
+
+species_ignition <- lm(ignition_delay ~ spcode, data = filter(final_data, self_ignition != 1))
+
+AIC(fmc_wp_species_ignition_withoutselfig, wp_species_ignition, fmc_species_ignition, species_ignition) # wp
 
 ###########################################################################
 # # Does the relationship between temperature integration and water status 
@@ -54,7 +56,16 @@ anova(fmc_wp_degsec)
 
 summary(fmc_wp_degsec)
 
+##############################################################################
+# which one is better in predicting temperature integration
+# between fmc and wp?
+##############################################################################
 
+wp_degsec <- lm(degsec_100 ~ wp*spcode, data = filtered_data)
 
+fmc_degsec <- lm(degsec_100 ~ fmc*spcode, data = filtered_data)
 
+species_degsec <- lm(degsec_100 ~ spcode, data = filtered_data)
+
+AIC(fmc_wp_degsec, wp_degsec, fmc_degsec, species_degsec) # species
 
