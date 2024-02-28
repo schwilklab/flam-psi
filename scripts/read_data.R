@@ -86,13 +86,20 @@ burn_trials <- left_join(burn_trials, burn_trials_wx)
 alldata <- left_join(samples, species) %>% left_join(water_potentials) %>%
   left_join(fmc) %>% left_join(burn_trials)
 
+##########################################################################
+# Converting spcode as factor and removing one outlier for JUPI because
+# this sample is showing exceptionally high fmc
+########################################################################
+
 alldata$spcode <- as.factor(alldata$spcode)
 
+alldata <- alldata %>%
+   filter(sample_id != "JDK31")
 
 dim(alldata)
 
 ################################################################################
-# Initially creating two subset of final_data because we need them later
+# Initially creating two subset of final_data because we might need them later
 # Initially samples without self ignition and then samples which ignited 
 # within 20 seconds
 ###############################################################################
@@ -100,8 +107,7 @@ dim(alldata)
 without_self_ignition <- alldata %>%
   filter(ignition_delay != 0)
 
-dim(without_self_ignition) # 143
-
+dim(without_self_ignition) 
 
 filtered_data <- without_self_ignition %>%
   filter(ignition_delay <= 20)
