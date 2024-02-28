@@ -10,6 +10,7 @@ library(xtable)
 ##########################################################################
 
 wp_fmc_plot <- ggplot(final_data, aes(wp, fmc, color=display_name)) +
+  geom_smooth(method = "lm", se = FALSE) +
   dws_point +
   xlab("Water potential (MPa)") +
   ylab("Moisture content (%)") +
@@ -18,13 +19,7 @@ wp_fmc_plot <- ggplot(final_data, aes(wp, fmc, color=display_name)) +
   theme(legend.position = c(0.28,0.85),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
-        axis.text = element_text(size = smsize)) +
-  geom_abline(intercept = coef(summary(wp_fmc_kr_model))[1], 
-              slope = coef(summary(wp_fmc_kr_model))[2], size = 1.5, color = schwilkcolors[1]) +
-  geom_abline(intercept = coef(summary(wp_fmc_kr_model))[1], 
-              slope = coef(summary(wp_fmc_kr_model))[3], size = 1.5, color = schwilkcolors[2]) +
-  geom_abline(intercept = coef(summary(wp_fmc_kr_model))[1], 
-              slope = coef(summary(wp_fmc_kr_model))[4], size = 1.5, color = schwilkcolors[3])
+        axis.text = element_text(size = smsize)) 
 
 
 
@@ -33,16 +28,16 @@ ggsave("./results/wp_fmc.pdf", plot=wp_fmc_plot,
 
 
 #######################################################################################
-# Now water potential and fmc vs ignition delay plot
+# Now fmc vs ignition delay plot
 ######################################################################################
 
-wp_ig <- ggplot(filter(final_data, self_ignition != 1), aes(wp, ignition_delay, color = spcode)) +
+wp_ig <- ggplot(final_data, aes(wp, ignition_delay, color = display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
-  ylab("Ignition delay (s)") +
+  ylab("Ignition delay time") +
   scale_color_manual(values = schwilkcolors) +
   pubtheme +
-  theme(legend.position = c(0.28,0.85),
+  theme(legend.position = c(0.15,0.85),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
@@ -51,33 +46,17 @@ ggsave("./results/wp_ignition.pdf", plot=wp_ig,
        height = 180, width = 170, units = "mm", dpi = 300)
 
 
-fmc_ig <- ggplot(filter(final_data, self_ignition != 1), aes(fmc, ignition_delay, color = spcode)) +
-  dws_point + bestfit +
-  xlab("Moisture content (%)") +
-  ylab("Ignition delay (s)") +
-  scale_color_manual(values = schwilkcolors) +
-  pubtheme +
-  theme(legend.position = c(0.20,0.85),
-        legend.text = element_text(face="italic"),
-        legend.title = element_blank(),
-        axis.text = element_text(size = smsize))
-
-ggsave("./results/fmc_ignition.pdf", plot=fmc_ig, 
-       height = 180, width = 170, units = "mm", dpi = 300)
-
-
-
 #######################################################################################
-# Now water potential and fmc vs temperature integration plot
+# Now water potential vs temperature integration plot
 ######################################################################################
 
-wp_degsec <- ggplot(filtered_data, aes(wp, degsec_100, color = spcode)) +
+wp_degsec <- ggplot(filtered_data, aes(wp, degsec_100, color = display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
   ylab(expression(Temperature ~ integration ~ (degree~C %.% s ) )) +
   scale_color_manual(values = schwilkcolors) +
   pubtheme +
-  theme(legend.position = c(0.80,0.90),
+  theme(legend.position = c(0.85,0.96),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
@@ -86,59 +65,51 @@ ggsave("./results/wp_degsec_100.pdf", plot= wp_degsec,
        height = 180, width = 170, units = "mm", dpi = 300)
 
 
-fmc_degsec <- ggplot(filtered_data, aes(fmc, degsec_100, color = spcode)) +
-  dws_point + bestfit +
-  xlab("Moisture content (%)") +
-  ylab(expression(Temperature ~ integration ~ (degree~C %.% s ) )) +
-  scale_color_manual(values = schwilkcolors) +
-  pubtheme +
-  theme(legend.position = c(0.80,0.90),
-        legend.text = element_text(face="italic"),
-        legend.title = element_blank(),
-        axis.text = element_text(size = smsize))
 
-ggsave("./results/fmc_degsec_100.pdf", plot= fmc_degsec, 
-       height = 180, width = 170, units = "mm", dpi = 300)
+##########################################################################################
+# Threshold for Juniperus pinchotii and Prosopis glandulosa for ignition delay time
+# Initially Juniperus pinchotii
+##########################################################################################
 
+predicted_model_data_jp <- data.frame(wp = segmented_jupi_ig$wp, ignition_delay = fitted(jupi_seg))
 
-###############################################################################
-# Segmented model plots for fmc for only JUPI
-###############################################################################
-
-predicted_model_data_jp_fmc <- data.frame(fmc = segmented_jupi_fmcig$fmc, ignition_delay = fitted(jupi_seg_fmc))
-
-jupi_threshold_fmcig <- ggplot(segmented_jupi_fmcig, aes(x = fmc, y = ignition_delay)) + 
-  geom_line(data = predicted_model_data_jp_fmc, size = 1.2) +
-  geom_point(data = segmented_jupi_fmcig) +
+jupi_threshold <- ggplot(segmented_jupi_ig, aes(x = wp, y = ignition_delay)) + 
+  geom_line(data = predicted_model_data_jp, size = 1.2) +
+  geom_point(data = segmented_jupi_ig,  position = "jitter", alpha = 0.5) +
   dws_point +
-  xlab("Moisture content (%)") +
-  ylab("Ignition delay time (s)") + 
+  xlab("Water potential (MPa)") +
+  ylab("Ignition delay time") + 
   pubtheme +
-  geom_vline(xintercept = confint(jupi_seg_fmc)[2], linetype = "dashed", size = 1) +
-  geom_vline(xintercept = confint(jupi_seg_fmc)[3], linetype = "dashed", size = 1) +
-  geom_rect(aes(xmin = confint(jupi_seg_fmc)[2], xmax = confint(jupi_seg_fmc)[3], ymin = -Inf, ymax = Inf),
+  geom_vline(xintercept = confint(jupi_seg)[2], linetype = "dashed", size = 1) +
+  geom_vline(xintercept = confint(jupi_seg)[3], linetype = "dashed", size = 1) +
+  geom_rect(aes(xmin = confint(jupi_seg)[2], xmax = confint(jupi_seg)[3], ymin = -Inf, ymax = Inf),
             fill = "lightsteelblue", alpha = 0.005)
 
-ggsave("./results/jupi_threshold_fmcig.pdf", plot = jupi_threshold_fmcig, 
+ggsave("./results/jupi_threshold.pdf", plot = jupi_threshold, 
        height = 180, width = 170, units = "mm", dpi = 300) 
 
-predicted_model_data_jp_fmc_degsec <- data.frame(fmc = segmented_jupi_fmc_degsec$fmc,  
-                                                 degsec_100 = fitted(jupi_fmc_degsec_segmented))
+###################################################################################################
+# Prosopis glandulosa
+###################################################################################################
 
-jupi_threshold_fmc_degsec <- ggplot(segmented_jupi_fmc_degsec, aes(x = fmc, y = degsec_100)) + 
-  geom_line(data = predicted_model_data_jp_fmc_degsec, size = 1.2) +
-  geom_point(data = segmented_jupi_fmc_degsec) +
+predicted_model_data <- data.frame(wp = segmented_prgl2_ig$wp, ignition_delay = fitted(prgl2_seg))
+
+# plot the fitted model
+prgl2_threshold <- ggplot(segmented_prgl2_ig, aes(x = wp, y = ignition_delay)) + 
+  geom_line(data = predicted_model_data, size = 1.2) +
+  geom_point(data = segmented_prgl2_ig, position = "jitter", alpha = 0.5) +
   dws_point +
-  xlab("Moisture content (%)") +
-  ylab(expression(Temperature ~ integration ~ (degree~C %.% s ) )) + 
+  xlab("Water potential (MPa)") +
+  ylab("Ignition delay time") + 
   pubtheme +
-  geom_vline(xintercept = confint(jupi_fmc_degsec_segmented)[2], linetype = "dashed", size = 1) +
-  geom_vline(xintercept = confint(jupi_fmc_degsec_segmented)[3], linetype = "dashed", size = 1) +
-  geom_rect(aes(xmin = confint(jupi_fmc_degsec_segmented)[2], xmax = confint(jupi_fmc_degsec_segmented)[3], ymin = -Inf, ymax = Inf),
+  geom_vline(xintercept = confint(prgl2_seg)[2], linetype = "dashed", size = 1) +
+  geom_vline(xintercept = 0, linetype = "dashed", size = 1) +
+  geom_rect(aes(xmin = confint(prgl2_seg)[2], xmax = 0, ymin = -Inf, ymax = Inf),
             fill = "lightsteelblue", alpha = 0.005)
 
-ggsave("./results/jupi_threshold_fmc_degsec.pdf", plot = jupi_threshold_fmc_degsec, 
-       height = 180, width = 170, units = "mm", dpi = 300) 
+ggsave("./results/mesquite_threshold.pdf", plot = prgl2_threshold, 
+       height = 180, width = 170, units = "mm", dpi = 300)  
+
 
 ################################################################################
 # PCA plot
@@ -177,3 +148,4 @@ pca_plot <- ggplot(wp_fmc_pca_axis, aes(x = PC1, y = PC2)) +
 
 ggsave("./results/pca_plot.pdf", plot = pca_plot, height = 180,
        width = 170, units = "mm", dpi = 300) 
+
