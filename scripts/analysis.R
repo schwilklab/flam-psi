@@ -43,29 +43,38 @@ fmc_species_ignition <- lm(ignition_delay ~ fmc*spcode, data = filter(final_data
 
 species_ignition <- lm(ignition_delay ~ spcode, data = filter(final_data, self_ignition != 1))
 
-AIC(fmc_wp_species_ignition_withoutselfig, wp_species_ignition, fmc_species_ignition, species_ignition) # wp
+wp_ignition <- lm(ignition_delay ~ wp, data = filter(final_data, self_ignition != 1))
+
+fmc_ignition <- lm(ignition_delay ~ fmc, data = filter(final_data, self_ignition != 1))
+
+AIC(fmc_wp_species_ignition_withoutselfig, wp_species_ignition,
+    fmc_species_ignition, species_ignition, wp_ignition, fmc_ignition) # wp
 
 ###########################################################################
 # # Does the relationship between temperature integration and water status 
 # varies among species?
 #############################################################################
 
-fmc_wp_degsec <- lm(degsec_100 ~ fmc*wp*spcode, data = filtered_data)
+fmc_wp_species_degsec <- lm(degsec_100 ~ fmc*wp*spcode, data = filtered_data)
 
-anova(fmc_wp_degsec)
+anova(fmc_wp_species_degsec)
 
-summary(fmc_wp_degsec)
+summary(fmc_wp_species_degsec)
 
 ##############################################################################
 # which one is better in predicting temperature integration
 # between fmc and wp?
 ##############################################################################
 
-wp_degsec <- lm(degsec_100 ~ wp*spcode, data = filtered_data)
+wp_species_degsec <- lm(degsec_100 ~ wp*spcode, data = filtered_data)
 
-fmc_degsec <- lm(degsec_100 ~ fmc*spcode, data = filtered_data)
+fmc_species_degsec <- lm(degsec_100 ~ fmc*spcode, data = filtered_data)
 
 species_degsec <- lm(degsec_100 ~ spcode, data = filtered_data)
 
-AIC(fmc_wp_degsec, wp_degsec, fmc_degsec, species_degsec) # species
+wp_degsec <- lm(degsec_100 ~ wp, data = filtered_data)
+
+fmc_degsec <- lm(degsec_100 ~ fmc, data = filtered_data)
+
+AIC(fmc_wp_degsec, wp_degsec, fmc_degsec, species_degsec, wp_species_degsec, fmc_species_degsec) # species
 

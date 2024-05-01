@@ -7,7 +7,7 @@ library(dplyr)
 library(tidyr)
 
 
-drydown <- read_csv("../data/shrub_drydown_test.csv")
+drydown <- read_csv("./data/shrub_drydown_test.csv")
 
 drydown_long <- drydown %>% select(-note) %>%
   pivot_longer(cols=starts_with("hr_"), names_to="time",
