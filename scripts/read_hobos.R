@@ -15,7 +15,7 @@ library(dplyr)
 library(tidyr)
 ####################################################################
 
-burn_trials <- read.csv("./data/burn_trials.csv", stringsAsFactors = FALSE)
+burn_trials <- read.csv("./data/2023/burn_trials.csv", stringsAsFactors = FALSE)
 
 
 
@@ -65,7 +65,7 @@ concat_hobo_files <- function(filelist, label) {
 # Grabbing all the hobo files from left
 ########################################################################
 
-flam_left <- concat_hobo_files(list.files("./data/burn_hobos",
+flam_left <- concat_hobo_files(list.files("./data/2023/burn_hobos",
                                           full.names = TRUE, recursive = TRUE,
                                           pattern = "flam.left*.csv"),
                                "flam_left")
@@ -78,7 +78,7 @@ flam_left <- concat_hobo_files(list.files("./data/burn_hobos",
 # Grabbing all the hobo files from mid
 #####################################################################
 
-flam_mid <- concat_hobo_files(list.files("./data/burn_hobos",
+flam_mid <- concat_hobo_files(list.files("./data/2023/burn_hobos",
                                          full.names = TRUE, recursive = TRUE,
                                          pattern = "flam.mid*.csv"),
                               "flam_mid")
@@ -89,7 +89,7 @@ flam_mid <- concat_hobo_files(list.files("./data/burn_hobos",
 # Grabbing all the hobo files from right
 #####################################################################
 
-flam_right <- concat_hobo_files(list.files("./data/burn_hobos",
+flam_right <- concat_hobo_files(list.files("./data/2023/burn_hobos",
                                            full.names = TRUE, recursive = TRUE,
                                            pattern = "flam.right*.csv"),
                                 "flam_right")

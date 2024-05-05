@@ -34,7 +34,7 @@ concat_hobo_files <- function(filelist){
 # Flam-psi
 #############################################################################
 
-hobo_bench_drying <- concat_hobo_files(list.files("./data/bench_drying_hobos",
+hobo_bench_drying <- concat_hobo_files(list.files("./data/2023/bench_drying_hobos",
                                                   full.names = TRUE,recursive = TRUE,
                                                   pattern=".*csv"))
 

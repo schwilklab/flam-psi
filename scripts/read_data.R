@@ -23,17 +23,17 @@ MASS_DISK_2 <- 53.21 # g
 ## Read all the data files
 ###############################################################################
 
-species <- read_csv("./data/species.csv")
+species <- read_csv("./data/2023/species.csv")
 
-samples <-  read_csv("./data/samples.csv") 
+samples <-  read_csv("./data/2023/samples.csv") 
 
-water_potentials <- read_csv("./data/water_potentials.csv") 
+water_potentials <- read_csv("./data/2023/water_potentials.csv") 
 
-fmc <- read_csv("./data/fmc.csv")
+fmc <- read_csv("./data/2023/fmc.csv")
 
-burn_trials <- read_csv("./data/burn_trials.csv")
+burn_trials <- read_csv("./data/2023/burn_trials.csv")
 
-burn_trials_wx <- read_csv("./data/burn_trials_wx.csv")
+burn_trials_wx <- read_csv("./data/2023/burn_trials_wx.csv")
 
 ###############################################################################
 ## Cleaning the data
@@ -63,7 +63,7 @@ burn_trials_wx <- burn_trials_wx %>%
 ## burn trials
 ##############################################################################
 
-burn_trials <- read_csv("./data/burn_trials.csv") %>%
+burn_trials <- read_csv("./data/2023/burn_trials.csv") %>%
   mutate(heat1 = (disc1_post - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
          heat2 = (disc2_post - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
          heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
