@@ -76,5 +76,5 @@ wp_degsec <- lm(degsec_100 ~ wp, data = filtered_data)
 
 fmc_degsec <- lm(degsec_100 ~ fmc, data = filtered_data)
 
-AIC(fmc_wp_degsec, wp_degsec, fmc_degsec, species_degsec, wp_species_degsec, fmc_species_degsec) # species
+AIC(fmc_wp_species_degsec, wp_degsec, fmc_degsec, species_degsec, wp_species_degsec, fmc_species_degsec) # species
 
