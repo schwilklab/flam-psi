@@ -1,6 +1,6 @@
 sample_id,spcode,species,notes,sex
 DK01,JUPI,Juniperus pinchotii,,
-DK02,JUPI,Juniperus pinchotii,,female
+DK02,JUPI,Juniperus pinchotii,conless,female
 DK03,JUPI,Juniperus pinchotii,,
 DK04,JUPI,Juniperus pinchotii,,female
 DK05,JUPI,Juniperus pinchotii,,
@@ -14,12 +14,12 @@ DK12,RHTR,Rhus trilobata,,
 DK13,RHTR,Rhus trilobata,,
 DK14,RHTR,Rhus trilobata,,
 DK15,PRGL2,Prosopis glandulosa,,
-DK16,PRGL3,Prosopis glandulosa,,
-DK17,PRGL4,Prosopis glandulosa,,
-DK18,PRGL5,Prosopis glandulosa,,
-DK19,PRGL6,Prosopis glandulosa,,
-DK20,PRGL7,Prosopis glandulosa,,
-DK21,PRGL8,Prosopis glandulosa,,
+DK16,PRGL2,Prosopis glandulosa,,
+DK17,PRGL2,Prosopis glandulosa,,
+DK18,PRGL2,Prosopis glandulosa,,
+DK19,PRGL2,Prosopis glandulosa,,
+DK20,PRGL2,Prosopis glandulosa,,
+DK21,PRGL2,Prosopis glandulosa,,
 DK22,PRAN3,Prunus angustifolia,,
 DK23,PRAN3,Prunus angustifolia,,
 DK24,PRAN3,Prunus angustifolia,,
@@ -69,8 +69,8 @@ ST32,JUAS,Juniperus ashei,,
 ST33,JUAS,Juniperus ashei,,
 ST34,JUAS,Juniperus ashei,,
 ST35,JUAS,Juniperus ashei,,
-ST36,JUAS,Juniperus ashei,,female
-ST37,JUAS,Juniperus ashei,,female
+ST36,JUAS,Juniperus ashei,conless,female
+ST37,JUAS,Juniperus ashei,conless,female
 ST38,JUAS,Juniperus ashei,,female
 ST39,JUAS,Juniperus ashei,,female
 ST40,JUAS,Juniperus ashei,coneless,female
@@ -82,10 +82,10 @@ TD03,MATR3,Mahonia trifoliolata,,
 TD04,MATR3,Mahonia trifoliolata,,
 TD05,MATR3,Mahonia trifoliolata,,
 TD06,DITE3,Diospyros texana,,
-TD07,DITE3,Diospyros texana,Prosopis glandulosa,
-TD08,DITE3,Diospyros texana,Prosopis glandulosa,
-TD09,DITE3,Diospyros texana,Prosopis glandulosa,
-TD10,MATR3,Mahonia trifoliolata,Prosopis glandulosa,
+TD07,DITE3,Diospyros texana,,
+TD08,DITE3,Diospyros texana,,
+TD09,DITE3,Diospyros texana,,
+TD10,MATR3,Mahonia trifoliolata,,
 TD11,MATR3,Mahonia trifoliolata,,
 TD12,DITE3,Diospyros texana,,
 TD13,DITE3,Diospyros texana,,
@@ -107,3 +107,73 @@ TD28,CELAR,Celtis laevigata,,
 TD29,CELAR,Celtis laevigata,,
 TD30,CELAR,Celtis laevigata,,
 TD31,CELAR,Celtis laevigata,,
+FRT01,PRAN3,Prunus angustifolia,,
+FRT02,PRAN3,Prunus angustifolia,,
+FRT03,PRAN3,Prunus angustifolia,,
+FRT04,PRAN3,Prunus angustifolia,,
+FRT05,PRAN3,Prunus angustifolia,,
+FRT06,PRAN3,Prunus angustifolia,,
+FRT07,PRAN3,Prunus angustifolia,,
+FRT08,RHTR,Rhus trilobata,larger leaf,
+FRT09,RHTR,Rhus trilobata,larger leaf,
+FRT10,RHTR,Rhus trilobata,larger leaf,
+FRT11,RHTR,Rhus trilobata,,
+FRT12,RHTR,Rhus trilobata,,
+FRT13,RHTR,Rhus trilobata,,
+FRT14,RHTR,Rhus trilobata,,
+FRT15,PRGL2,Prosopis glandulosa,,
+FRT16,PRGL2,Prosopis glandulosa,,
+FRT17,PRGL2,Prosopis glandulosa,,
+FRT18,PRGL2,Prosopis glandulosa,,
+FRT19,PRGL2,Prosopis glandulosa,,
+FRT20,PRGL2,Prosopis glandulosa,,
+FRT21,PRGL2,Prosopis glandulosa,,
+FRT22,JUPI,Juniperus pinchotii,,
+FRT23,JUPI,Juniperus pinchotii,,
+FRT24,JUPI,Juniperus pinchotii,,
+FRT25,JUPI,Juniperus pinchotii,,
+FRT26,JUPI,Juniperus pinchotii,,
+FRT27,JUPI,Juniperus pinchotii,,
+FRT28,JUPI,Juniperus pinchotii,,
+FRT29,JUPI,Juniperus pinchotii,,female
+FRT30,JUPI,Juniperus pinchotii,,female
+FRT31,JUPI,Juniperus pinchotii,,female
+FRT32,JUPI,Juniperus pinchotii,conless,female
+FRT33,JUPI,Juniperus pinchotii,,female
+FRT34,JUPI,Juniperus pinchotii,,female
+FRT35,JUPI,Juniperus pinchotii,,female
+FFT01,JUAS,Juniperus ashei,,
+FFT02,JUAS,Juniperus ashei,,
+FFT03,JUAS,Juniperus ashei,,
+FFT05,JUAS,Juniperus ashei,,
+FFT06,JUAS,Juniperus ashei,,
+FFT07,JUAS,Juniperus ashei,,
+FFT08,DITE3,Diospyros texana,,
+FFT09,DITE3,Diospyros texana,,
+FFT10,DITE3,Diospyros texana,,
+FFT11,DITE3,Diospyros texana,,
+FFT12,DITE3,Diospyros texana,,
+FFT13,DITE3,Diospyros texana,,
+FFT14,DITE3,Diospyros texana,,
+FFT15,JUAS,Juniperus ashei,,
+FFT16,PRGL2,Prosopis glandulosa,,
+FFT17,PRGL2,Prosopis glandulosa,,
+FFT18,PRGL2,Prosopis glandulosa,,
+FFT19,PRGL2,Prosopis glandulosa,,
+FFT20,PRGL2,Prosopis glandulosa,,
+FFT21,PRGL2,Prosopis glandulosa,,
+FFT22,PRGL2,Prosopis glandulosa,,
+FFT23,JUPI,Juniperus pinchotii,,female
+FFT24,JUPI,Juniperus pinchotii,,female
+FFT25,JUPI,Juniperus pinchotii,,female
+FFT26,JUPI,Juniperus pinchotii,,female
+FFT27,JUPI,Juniperus pinchotii,,female
+FFT28,JUPI,Juniperus pinchotii,,female
+FFT29,JUPI,Juniperus pinchotii,,female
+FFT30,RHTR,Rhus trilobata,,
+FFT31,RHTR,Rhus trilobata,,
+FFT32,RHTR,Rhus trilobata,,
+FFT33,RHTR,Rhus trilobata,,
+FFT34,RHTR,Rhus trilobata,,
+FFT35,RHTR,Rhus trilobata,,
+FFT36,RHTR,Rhus trilobata,,
