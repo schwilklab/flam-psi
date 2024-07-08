@@ -43,12 +43,14 @@ fmc_species_ignition <- lm(ignition_delay ~ fmc*spcode, data = filter(final_data
 
 species_ignition <- lm(ignition_delay ~ spcode, data = filter(final_data, self_ignition != 1))
 
-wp_ignition <- lm(ignition_delay ~ wp, data = filter(final_data, self_ignition != 1))
+wp_species_ignition_pre_temp <- lm(ignition_delay ~ wp*spcode + pre_burning_temp + wind_speed, data = filter(final_data, self_ignition != 1))
 
-fmc_ignition <- lm(ignition_delay ~ fmc, data = filter(final_data, self_ignition != 1))
+#wp_ignition <- lm(ignition_delay ~ wp, data = filter(final_data, self_ignition != 1))
+
+#fmc_ignition <- lm(ignition_delay ~ fmc, data = filter(final_data, self_ignition != 1))
 
 AIC(fmc_wp_species_ignition_withoutselfig, wp_species_ignition,
-    fmc_species_ignition, species_ignition, wp_ignition, fmc_ignition) # wp
+    fmc_species_ignition, species_ignition, wp_species_ignition_pre_temp) # wp
 
 ###########################################################################
 # # Does the relationship between temperature integration and water status 
@@ -72,9 +74,11 @@ fmc_species_degsec <- lm(degsec_100 ~ fmc*spcode, data = filtered_data)
 
 species_degsec <- lm(degsec_100 ~ spcode, data = filtered_data)
 
-wp_degsec <- lm(degsec_100 ~ wp, data = filtered_data)
+wp_species_degsec_pre_temp <- lm(degsec_100 ~ wp*spcode + pre_burning_temp + wind_speed, data = filtered_data)
 
-fmc_degsec <- lm(degsec_100 ~ fmc, data = filtered_data)
+#wp_degsec <- lm(degsec_100 ~ wp, data = filtered_data)
 
-AIC(fmc_wp_species_degsec, wp_degsec, fmc_degsec, species_degsec, wp_species_degsec, fmc_species_degsec) # species
+#fmc_degsec <- lm(degsec_100 ~ fmc, data = filtered_data)
+
+AIC(fmc_wp_species_degsec, species_degsec, wp_species_degsec, fmc_species_degsec, wp_species_degsec_pre_temp) # species
 
