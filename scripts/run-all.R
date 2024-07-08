@@ -22,11 +22,11 @@ source("./scripts/read_data.R")
 
 source("./scripts/read_hobos.R")
 
+source("./scripts/read_hobos_2024.R")
+
 
 ###########################################################################
-# produce pca_data object, and out put were assigned to the alldata, 
-# removed all the NAs and named it final_data, the final_data
-# contains 137 observation without any NAs
+# produce pca_data object
 ##########################################################################
 
 source("./scripts/flam_pca.R")
