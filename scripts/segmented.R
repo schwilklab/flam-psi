@@ -83,6 +83,8 @@ lm_prgl2_fmc_ig <- lm(ignition_delay ~ fmc, data = segmented_prgl2_ig)
 
 prgl2_seg_ig_fmc <- segmented::segmented(lm_prgl2_fmc_ig, seg.Z = ~ fmc)
 
+summary(prgl2_seg_ig_fmc)
+
 AIC(lm_prgl2_fmc_ig, prgl2_seg_ig_fmc) # segmented is better
 
 ####################################################################################
@@ -101,7 +103,9 @@ lm_degsec_prgl2_fmc <- lm(degsec_100 ~ fmc, data = segmented_prgl2_ig)
 
 prgl2_degsec_seg_fmc <- segmented::segmented(lm_degsec_prgl2_fmc, seg.Z = ~ fmc)
 
-AIC(lm_degsec_prgl2_fmc, prgl2_degsec_seg_fmc) # Better
+summary(prgl2_degsec_seg_fmc)
+
+AIC(lm_degsec_prgl2_fmc, prgl2_degsec_seg_fmc) # segmeneted is Better
 
 
 ###########################################################################
@@ -145,7 +149,9 @@ lm_degsec_rhtr_fmc <- lm(degsec_100 ~ fmc, data = segmented_rhtr_ig)
 
 rhtr_degsec_seg_fmc <- segmented::segmented(lm_degsec_rhtr_fmc, seg.Z = ~ fmc)
 
-AIC(lm_degsec_rhtr_fmc, rhtr_degsec_seg_fmc) 
 
+summary(rhtr_degsec_seg_fmc)
+
+AIC(lm_degsec_rhtr_fmc, rhtr_degsec_seg_fmc) 
 
 

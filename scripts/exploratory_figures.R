@@ -82,3 +82,52 @@ ggplot(filter(alldata, spcode!= "JUPI"), aes(wp, flame_duration, color=spcode)) 
 ggplot(alldata, aes(mass_pre, ignition_delay, color=spcode)) + geom_point()
 
 
+###############################################################################################
+# 2024
+##############################################################################################
+
+short_ignite_2024 <- filter(final_data_2024, ignition_delay <= 20)
+
+fig1_2024 <- ggplot(final_data_2024, aes(wp, lfmc, color = spcode)) +
+  dws_point + bestfit +
+  xlab("Water potential (MPa)") +
+  ylab("Leaf moisture content (%)") +
+  pubtheme +
+  theme(legend.position = c(0.15,0.75),
+        legend.text = element_text(face="italic"),
+        legend.title = element_blank(),
+        axis.text = element_text(size = smsize))
+
+
+fig2_2024 <- ggplot(final_data_2024, aes(wp, cmc, color = spcode)) +
+  dws_point + bestfit +
+  xlab("Water potential (MPa)") +
+  ylab("Canopy moisture content (%)") +
+  pubtheme +
+  theme(legend.position = c(0.15,0.75),
+        legend.text = element_text(face="italic"),
+        legend.title = element_blank(),
+        axis.text = element_text(size = smsize))
+
+
+fig3_2024 <- ggplot(short_ignite_2024, aes(wp, heat_release_j, color = spcode)) +
+  dws_point + bestfit +
+  xlab("Water potential (MPa)") +
+  ylab("Heat release (J)") +
+  pubtheme +
+  theme(legend.position = c(0.90,0.85),
+        legend.text = element_text(face="italic"),
+        legend.title = element_blank(),
+        axis.text = element_text(size = smsize))
+
+
+fig4_2024 <- ggplot(final_data_2024, aes(wp, ignition_delay, color = spcode)) +
+  dws_point + bestfit +
+  xlab("Water potential (MPa)") +
+  ylab("Ignition delay time (s)") +
+  pubtheme +
+  ylim(0, 190) +
+  theme(legend.position = c(0.1,0.85),
+        legend.text = element_text(face="italic"),
+        legend.title = element_blank(),
+        axis.text = element_text(size = smsize))

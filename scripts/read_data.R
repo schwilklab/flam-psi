@@ -4,6 +4,8 @@
 library(readr)
 library(dplyr)
 library(tidyr)
+library(stringr)
+library(lubridate)
 
 ###############################################################################
 # Constants
@@ -142,6 +144,8 @@ burn_trials_2024 <- read_csv("./data/2024/burn_trials.csv")
 
 burn_trials_weather_2024 <- read_csv("./data/2024/burn_trials_weather.csv")
 
+time_wp <- read_csv("./data/2024/time_wp.csv")
+
 ######################################################################################
 #  Data cleaning 2024
 #####################################################################################
@@ -234,6 +238,23 @@ alldata_2024 <- alldata_2024 %>%
 
 
 #View(alldata_2024)
+
+
+#######################################################################################
+# Time vs wp 
+######################################################################################
+
+
+
+
+
+time_wp <- time_wp%>%
+  mutate(date_time = mdy_hms(paste(time_wp$date, time_wp$time))) %>%
+  group_by(sample_id) %>%
+  mutate(hours = as.numeric(difftime(date_time, first(date_time), units = "hours")),
+         hours = round(hours, 2)) %>%
+  left_join(species_2024, by = "spcode") %>%
+  dplyr::select(-scientific_name)
 
 ######################################################################################
 ## Cleaning up work space, only keeping the alldata
