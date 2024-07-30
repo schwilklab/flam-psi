@@ -48,7 +48,7 @@ ggsave("./results/fig3.pdf", plot=fig3, width=col1, height=col1, units="cm")
 ggsave("./results/fig3.png", plot=fig3, width=col1, height=col1, units="cm")
 
 
-fig4 <- ggplot(alldata, aes(fmc, PC1, color=display_name)) +
+fig4 <- ggplot(final_data, aes(fmc, PC1, color=display_name)) +
   dws_point + bestfit +
   xlab("Moisture content (%)") +
   ylab("Flammability (PC1)") +
@@ -60,8 +60,6 @@ fig4 <- ggplot(alldata, aes(fmc, PC1, color=display_name)) +
         axis.text = element_text(size = smsize))
 ggsave("./results/fig4.pdf", plot=fig4, width=col1, height=col1, units="cm")
 ggsave("./results/fig4.png", plot=fig4, width=col1, height=col1, units="cm")
-
-
 
 
 ggplot(alldata, aes(fmc, flame_duration, color=spcode)) + geom_point() + geom_smooth(method="lm")
@@ -98,6 +96,10 @@ fig1_2024 <- ggplot(final_data_2024, aes(wp, lfmc, color = spcode)) +
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
 
+ggsave("./results/fig1_2024.pdf", plot=fig1_2024, width=col1, height=col1, units="cm")
+
+
+
 
 fig2_2024 <- ggplot(final_data_2024, aes(wp, cmc, color = spcode)) +
   dws_point + bestfit +
@@ -108,6 +110,8 @@ fig2_2024 <- ggplot(final_data_2024, aes(wp, cmc, color = spcode)) +
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
+fig2_2024
+ggsave("./results/fig2_2024.pdf", plot=fig2_2024, width=col1, height=col1, units="cm")
 
 
 fig3_2024 <- ggplot(short_ignite_2024, aes(wp, heat_release_j, color = spcode)) +
@@ -119,7 +123,7 @@ fig3_2024 <- ggplot(short_ignite_2024, aes(wp, heat_release_j, color = spcode)) 
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
-
+fig3_2024
 
 fig4_2024 <- ggplot(final_data_2024, aes(wp, ignition_delay, color = spcode)) +
   dws_point + bestfit +
@@ -131,3 +135,4 @@ fig4_2024 <- ggplot(final_data_2024, aes(wp, ignition_delay, color = spcode)) +
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
+fig4_2024
