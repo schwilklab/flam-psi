@@ -114,10 +114,12 @@ dim(filtered_data)
 
 filtered_sample_id <- filtered_data$sample_id
 
-alldata$ignition_delay <- log(alldata$ignition_delay + 1)
+## DWS: NO! do not leave same name when you log the data! and why log base e?
+## not log10?
+alldata$log_ignition_delay <- log10(alldata$ignition_delay + 1)
 
 without_self_ignition <- without_self_ignition %>%
-  mutate(ignition_delay = log(ignition_delay + 1))
+  mutate(log_ignition_delay = log10(ignition_delay + 1))
 
 
 
