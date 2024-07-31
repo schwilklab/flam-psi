@@ -19,19 +19,12 @@ pca_data <- alldata %>%
 
 
 dim(pca_data)
-
 any(is.na(pca_data)) 
-
 flam_pca <- prcomp(pca_data[,-1], scale=TRUE)
-
 summary(flam_pca)
-
 flam_loadings <- flam_pca$rotation[ ,1:2] 
-
 flam_loadings
-
 biplot(flam_pca)
-
 
 ###############################################################################
 ## Assigning PC1 and PC2 to pca data and  then merging with alldata
@@ -45,7 +38,6 @@ pca_data$PC2 <- flam_pca$x[ ,2]
 pca_data <- pca_data %>%
   dplyr::select(sample_id, PC1, PC2)
 
-
 final_data <- left_join(alldata, pca_data) %>%
   filter(sample_id %in% pca_data$sample_id)
 
@@ -56,8 +48,6 @@ filtered_data <- final_data %>%
   filter(sample_id %in% filtered_sample_id)
   
 dim(filtered_data)
-
-
 
 ###############################################################################
 # 2024
@@ -71,19 +61,13 @@ pca_data_2024 <- alldata_2024 %>%
                 peak_temp, degsec_100, ignition_delay) %>%
   filter(complete.cases(.))
 
-
 dim(pca_data_2024)
-
 any(is.na(pca_data_2024)) 
 
 flam_pca_2024 <- prcomp(pca_data_2024[,-1], scale=TRUE)
-
 summary(flam_pca_2024)
-
 flam_loadings_2024 <- flam_pca_2024$rotation[ ,1:2] 
-
 biplot(flam_pca_2024)
-
 
 pca_data_2024$PC1 <- flam_pca_2024$x[ ,1]
 pca_data_2024$PC2 <- flam_pca_2024$x[ ,2]
@@ -97,7 +81,6 @@ final_data_2024 <- left_join(alldata_2024, pca_data_2024) %>%
   filter(sample_id != "FRT19")
 
 dim(final_data_2024)
-
 
 ###############################################################################
 # Cleaning the environment, leaving the alldata for exploratory figures

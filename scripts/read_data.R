@@ -26,15 +26,10 @@ MASS_DISK_2 <- 53.21 # g
 ###############################################################################
 
 species <- read_csv("./data/2023/species.csv")
-
 samples <-  read_csv("./data/2023/samples.csv") 
-
 water_potentials <- read_csv("./data/2023/water_potentials.csv") 
-
 fmc <- read_csv("./data/2023/fmc.csv")
-
 burn_trials <- read_csv("./data/2023/burn_trials.csv")
-
 burn_trials_wx <- read_csv("./data/2023/burn_trials_wx.csv")
 
 
@@ -243,9 +238,6 @@ alldata_2024 <- alldata_2024 %>%
 #######################################################################################
 # Time vs wp 
 ######################################################################################
-
-
-
 
 
 time_wp <- time_wp%>%

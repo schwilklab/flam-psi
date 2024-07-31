@@ -23,9 +23,10 @@ source("./scripts/read_data.R")
 ############################################################################
 
 #source("./scripts/read_hobos.R")
-
 #source("./scripts/read_hobos_2024.R")
 
+## Read from RDS files assuming data is up to date:
+hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 
 ###########################################################################
 # produce pca_data object
