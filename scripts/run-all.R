@@ -9,7 +9,6 @@
 # data, conduct PCAs, fit models, build tables and figures.
 
 source("./scripts/ggplot_theme.R")
-
 DATA_CACHE_DIR <- "./results"
 
 #############################################################################
@@ -27,7 +26,7 @@ source("./scripts/read_data.R")
 
 ## Read from RDS files assuming data is up to date:
 hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
-
+hobos_wider_2024 <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider_2024.RDS"))
 ###########################################################################
 # produce pca_data object
 ##########################################################################

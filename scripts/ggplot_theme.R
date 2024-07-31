@@ -1,4 +1,4 @@
-size## ggplot_theme.R
+## ggplot_theme.R
 ##
 ## Theme options for graphs to be sourced in. Provides four themes, two for
 ## publications and two for presentations. Math for font sizes might need to be
