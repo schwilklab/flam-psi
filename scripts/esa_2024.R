@@ -6,16 +6,21 @@ library(tidyr)
 library(broom)
 library(purrr)
 
-ESA_data <-  final_data_2024 %>%
-  filter(wp >= -2 & sex !="female")
+## ESA_data <-  final_data_2024 %>%
+##   filter(wp >= -2 & sex !="female")
+
+esa_data <- final_data_2024 %>%
+  filter(sex != "female" & spcode != "JUPIF") %>%
+  filter(ignition_delay <= 60)
+
 
 # Flammability 2 dimensional and heat release dominate one in these data. But
 # heat release and ignition
 
-high_fmc_sum <- final_data_2024 %>%
-  filter(wp >= -2 & sex !="female") %>%
+high_fmc_sum <- esa_data %>%
+  filter(wp >= -2) %>%
   group_by(spcode, display_name) %>%
-  summarize(across(c(ignition_delay,heat_release_j), mean))
+  summarize(across(c(ignition_delay,heat_release_j, PC1, PC2), mean))
 
 high_fmc_sum
 
@@ -26,11 +31,29 @@ ESA_ign_heat <- ggplot(high_fmc_sum, aes(ignition_delay, heat_release_j/1000)) +
   ylab("Heat release (kJ)") +
   scale_color_brewer(palette = "Paired") + #scale_color_manual(values = schwilkcolors) +
   pubtheme +
-  theme(legend.position = c(0.74,0.45),
+  theme(
+    #legend.position = c(0.82,0.45),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize-4))
 ggsave("./results/ESA_ign_heat.pdf", plot=ESA_ign_heat, width=col1*1.5, height=col1, units="cm")
+
+## Same for PC1
+## Shows same story
+
+## ESA_ign_PC1 <- ggplot(high_fmc_sum, aes(ignition_delay, PC1)) +
+##   #estfit +
+##   geom_point(aes(color=display_name), size=2, alpha=0.9, shape=16) +
+##   xlab("Ignition delay (s)") +
+##   ylab("PC 1 (heat release)") +
+##   scale_color_brewer(palette = "Paired") + #scale_color_manual(values = schwilkcolors) +
+##   pubtheme +
+##   theme(legend.position = c(0.74,0.45),
+##         legend.text = element_text(face="italic"),
+##         legend.title = element_blank(),
+##         axis.text = element_text(size = smsize-4))
+## ggsave("./results/ESA_ign_pc1.pdf", plot=ESA_ign_PC1, width=col1*1.5, height=col1, units="cm")
+
 
 
 ## Individual level figures
@@ -39,6 +62,7 @@ ggsave("./results/ESA_ign_heat.pdf", plot=ESA_ign_heat, width=col1*1.5, height=c
 # 2023:
 
 # WP-FM relationship varies across species. Some show slow change in FMC with WP
+# 2023 data 3 species
 ESA_wp_fm1 <- ggplot(alldata, aes(wp, fmc, color=display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
@@ -49,13 +73,12 @@ ESA_wp_fm1 <- ggplot(alldata, aes(wp, fmc, color=display_name)) +
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = smsize))
-ggsave("./results/ESA_wp_fm1.pdf", plot=ESA_wp_fm1, width=col1*1.5, height=col1, units="cm")
-
+ggsave("./results/ESA_wp_fm1.pdf", plot=ESA_wp_fm1, width=col1, height=col1, units="cm")
 
 
 
 ## 2024
-ESA_wp_ign <- ggplot(filter(final_data_2024, ignition_delay <= 60 & wp > -8 & spcode !="JUPI"),
+ESA_wp_ign <- ggplot(filter(esa_data), #final_data_2024, ignition_delay <= 60 & wp > -8),
                aes(wp, ignition_delay, color=display_name)) +
   geom_point(size=2, alpha=0.9, shape=16, position=position_jitter(height=0.2)) +
   geom_smooth(method="lm",se = FALSE, linewidth=1) +
@@ -63,12 +86,13 @@ ESA_wp_ign <- ggplot(filter(final_data_2024, ignition_delay <= 60 & wp > -8 & sp
   ylab("Ignition delay (s)") +
  scale_color_brewer(palette = "Paired") +
   pubtheme +
-  theme(legend.position = c(0.2,0.76),
+ theme(
+   #legend.position = c(0.2,0.76),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
         axis.text = element_text(size = textsize-3))
 ESA_wp_ign
-ggsave("./results/ESA_wp_ign.pdf", plot=ESA_wp_ign, width=col1*1.2, height=col1, units="cm")
+ggsave("./results/ESA_wp_ign.pdf", plot=ESA_wp_ign, width=col1*1.5, height=col1, units="cm")
 
 
 ## fig6_2024 <- ggplot(filter(final_data_2024, ignition_delay <= 60 & wp > -8 & spcode !="JUPI"),
@@ -91,19 +115,6 @@ ggsave("./results/ESA_wp_ign.pdf", plot=ESA_wp_ign, width=col1*1.2, height=col1,
 
 ## Species level summaries
 
-names(final_data_2024)
-
-## attempt for one
-
-temp <- final_data_2024 %>% filter(sex != "female") %>%
-  filter(ignition_delay <= 20) %>%
-  filter(spcode=="JUPI")
-
-lm(ignition_delay ~ wp, data = temp)
-
-esa_data <- final_data_2024 %>%
-  filter(sex != "female" & spcode != "JUPI") %>%
-  filter(ignition_delay <= 20)
 
 ## Sensitivity to fuel moisture parameters
 species_ign_sensitivity <- esa_data %>%
@@ -130,25 +141,6 @@ pv_sum
 species_sum <- left_join(species_ign_sensitivity, pv_sum)
 species_sum
 
-ggplot(filter(species_sum, spcode!="JUAS"), aes(capacitance_above_tlp, ign_sens)) +
-  geom_point()
-
-ggplot(species_sum, aes(capacitance_below_tlp, ign_sens)) +
-  geom_point()
-
-
-ggplot(species_sum, aes(modulus_elasticity, ign_sens)) +
-  geom_point()
-
-ggplot(filter(species_sum, spcode!="JUAS"),
-       aes(mc_tlp, ign_sens)) +
-  geom_point()
-
-
-ggplot(filter(species_sum, spcode!="JUAS"), aes(rwc_tlp, ign_sens,color=spcode)) +
-  geom_point()
-
-
 
 ## Using all data as a measure of shoot "capacitance"
 
@@ -169,10 +161,14 @@ ESA_shoot_capac <- ggplot(species_sum, aes(1/wp_sens, ign_sens, color=display_na
   ylab(expression(paste("Ignitibility response to ", Psi, " (",s %.% MPa^{-1}, ")"))) +
   scale_color_brewer(palette = "Paired") +
   pubtheme +
-  theme(legend.position = c(0.2,0.76),
+  theme(
+      #legend.position = c(.77,0.65),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
-        axis.text = element_text(size = textsize-3))
-ggsave("./results/ESA_shoot_capac.pdf", plot=ESA_shoot_capac, width=col1*1.2, height=col1, units="cm")
+        axis.text = element_text(size = textsize-4))
+ggsave("./results/ESA_shoot_capac.pdf", plot=ESA_shoot_capac, width=col1*1.5, height=col1, units="cm")
 
 
+mod <- lm(ign_sens ~ 1/wp_sens, data=species_sum)
+summary(mod)
+anova(mod)
