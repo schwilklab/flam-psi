@@ -12,7 +12,10 @@ library(extrafont)
 loadfonts()
 
 # constants and theme for publications
-schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")
+#schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")
+schwilkcolors <- c("#4A4C4F", "#403F2D", "#AF5F42", "#8F7955", "#EC4E15",
+                   "#EE722E", "#D68D18", "#A9B678", "#E3C477")
+
 #EC4E15
 #362908
 

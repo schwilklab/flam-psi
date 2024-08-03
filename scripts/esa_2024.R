@@ -5,13 +5,14 @@
 library(tidyr)
 library(broom)
 library(purrr)
-
+library(forcats)
 ## ESA_data <-  final_data_2024 %>%
 ##   filter(wp >= -2 & sex !="female")
 
 esa_data <- final_data_2024 %>%
   filter(sex != "female" & spcode != "JUPIF") %>%
   filter(ignition_delay <= 60)
+
 
 
 # Flammability 2 dimensional and heat release dominate one in these data. But
@@ -22,14 +23,26 @@ high_fmc_sum <- esa_data %>%
   group_by(spcode, display_name) %>%
   summarize(across(c(ignition_delay,heat_release_j, PC1, PC2), mean))
 
-high_fmc_sum
+species_sorted <- high_fmc_sum %>% arrange(ignition_delay) %>% dplyr::select(display_name)
+species_sorted <- unname(unlist(as.vector(species_sorted[,2])))
+
+high_fmc_sum$display_name <- factor(high_fmc_sum$display_name, levels = species_sorted)
+esa_data$display_name <- factor(esa_data$display_name, levels = species_sorted)
+alldata$display_name <- factor(alldata$display_name, levels = species_sorted)
+
+
+names(schwilkcolors) <- species_sorted
+schwilkpalette <- scale_color_manual(name="display_name", values=schwilkcolors)
+
+
 
 ESA_ign_heat <- ggplot(high_fmc_sum, aes(ignition_delay, heat_release_j/1000)) +
   #estfit +
-  geom_point(aes(color=display_name), size=2, alpha=0.9, shape=16) +
+  geom_point(aes(color=display_name), size=3, alpha=0.9, shape=16) +
   xlab("Ignition delay (s)") +
   ylab("Heat release (kJ)") +
-  scale_color_brewer(palette = "Paired") + #scale_color_manual(values = schwilkcolors) +
+  schwilkpalette +
+#  scale_color_brewer(palette = "Paired") + #scale_color_manual(values = schwilkcolors) +
   pubtheme +
   theme(
     #legend.position = c(0.82,0.45),
@@ -67,7 +80,8 @@ ESA_wp_fm1 <- ggplot(alldata, aes(wp, fmc, color=display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
   ylab("Fuel moisture content (%)") +
-  scale_color_manual(values = schwilkcolors) +
+  schwilkpalette +
+  #scale_color_manual(values = schwilkcolors) +
   pubtheme +
   theme(legend.position = c(0.28,0.85),
         legend.text = element_text(face="italic"),
@@ -80,11 +94,12 @@ ggsave("./results/ESA_wp_fm1.pdf", plot=ESA_wp_fm1, width=col1, height=col1, uni
 ## 2024
 ESA_wp_ign <- ggplot(filter(esa_data), #final_data_2024, ignition_delay <= 60 & wp > -8),
                aes(wp, ignition_delay, color=display_name)) +
-  geom_point(size=2, alpha=0.9, shape=16, position=position_jitter(height=0.2)) +
+  geom_point(size=3, alpha=0.9, shape=16, position=position_jitter(height=0.2)) +
   geom_smooth(method="lm",se = FALSE, linewidth=1) +
   xlab("Water potential (Mpa)") +
   ylab("Ignition delay (s)") +
- scale_color_brewer(palette = "Paired") +
+  schwilkpalette +
+# scale_color_brewer(palette = "Paired") +
   pubtheme +
  theme(
    #legend.position = c(0.2,0.76),
@@ -156,10 +171,11 @@ species_wp_fmc <- esa_data %>%
 species_sum <- left_join(species_sum, species_wp_fmc)
 
 ESA_shoot_capac <- ggplot(species_sum, aes(1/wp_sens, ign_sens, color=display_name)) +
-   geom_point(aes(color=display_name), size=2, alpha=0.9, shape=16) +
+   geom_point(aes(color=display_name), size=3, alpha=0.9, shape=16) +
   xlab(expression(paste("Shoot capacitance ", MPa^{-1}))) +
   ylab(expression(paste("Ignitibility response to ", Psi, " (",s %.% MPa^{-1}, ")"))) +
-  scale_color_brewer(palette = "Paired") +
+  schwilkpalette +
+#  scale_color_brewer(palette = "Paired") +
   pubtheme +
   theme(
       #legend.position = c(.77,0.65),
@@ -172,3 +188,5 @@ ggsave("./results/ESA_shoot_capac.pdf", plot=ESA_shoot_capac, width=col1*1.5, he
 mod <- lm(ign_sens ~ 1/wp_sens, data=species_sum)
 summary(mod)
 anova(mod)
+
+
