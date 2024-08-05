@@ -6,6 +6,9 @@ library(tidyr)
 library(broom)
 library(purrr)
 library(forcats)
+
+source("./scripts/ggplot_theme.R")
+
 ## ESA_data <-  final_data_2024 %>%
 ##   filter(wp >= -2 & sex !="female")
 
@@ -92,7 +95,7 @@ ggsave("./results/ESA_wp_fm1.pdf", plot=ESA_wp_fm1, width=col1, height=col1, uni
 
 
 ## 2024
-ESA_wp_ign <- ggplot(filter(esa_data), #final_data_2024, ignition_delay <= 60 & wp > -8),
+ESA_wp_ign <- ggplot(filter(esa_data, wp >= -7), 
                aes(wp, ignition_delay, color=display_name)) +
   geom_point(size=3, alpha=0.9, shape=16, position=position_jitter(height=0.2)) +
   geom_smooth(method="lm",se = FALSE, linewidth=1) +
@@ -181,8 +184,10 @@ ESA_shoot_capac <- ggplot(species_sum, aes(1/wp_sens, ign_sens, color=display_na
       #legend.position = c(.77,0.65),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
-        axis.text = element_text(size = textsize-4))
-ggsave("./results/ESA_shoot_capac.pdf", plot=ESA_shoot_capac, width=col1*1.5, height=col1, units="cm")
+        axis.text = element_text(size = textsize-4)
+  )
+
+  ggsave("./results/ESA_shoot_capac.pdf", plot=ESA_shoot_capac, width=col1*1.5, height=col1, units="cm")
 
 
 mod <- lm(ign_sens ~ 1/wp_sens, data=species_sum)
