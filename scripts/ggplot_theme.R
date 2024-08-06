@@ -30,7 +30,7 @@ ppi <- 300 # for raster formats
 ## Some specific geoms to add
 
 dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
-bestfit <- geom_smooth(method="lm",se = FALSE, size=1.5)
+bestfit <- geom_smooth(method="lm",se = FALSE, linewidth=1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun.y=fun, geom=geom, size = 3, ...)
