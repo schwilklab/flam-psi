@@ -86,6 +86,7 @@ ESA_wp_fm1 <- ggplot(alldata, aes(wp, fmc, color=display_name)) +
   schwilkpalette +
   #scale_color_manual(values = schwilkcolors) +
   pubtheme +
+  xlim(c(-7, 0)) +
   theme(legend.position = c(0.28,0.85),
         legend.text = element_text(face="italic"),
         legend.title = element_blank(),
@@ -194,4 +195,8 @@ mod <- lm(ign_sens ~ 1/wp_sens, data=species_sum)
 summary(mod)
 anova(mod)
 
-
+library(lsmeans)
+mod2 <- lm(ignition_delay ~ wp*display_name*lfmc, data=esa_data)
+summary(mod2)
+anova(mod2)
+lstrends(mod2, "display_name", var="wp")
