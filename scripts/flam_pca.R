@@ -49,60 +49,14 @@ pca_data <- pca_data %>%
 final_data <- left_join(alldata, pca_data) %>%
   filter(sample_id %in% pca_data$sample_id)
 
-dim(final_data)
-
-filtered_data <- final_data %>%
-  filter(self_ignition != 1) %>%
-  filter(sample_id %in% filtered_sample_id)
-  
-dim(filtered_data)
+dim(final_data) # 355
 
 
 
 ###############################################################################
-# 2024
+# Cleaning the environment, leaving the alldata, and pca loadings for 
+# exploratory figures and pca plot
 ###############################################################################
 
-alldata_2024 <- left_join(alldata_2024, hobos_wider_2024)
-
-pca_data_2024 <- alldata_2024 %>%
-  dplyr::select(sample_id, heat_release_j, ##, massloss,
-                vol_burned, flame_height, flame_duration, dur_100,
-                peak_temp, degsec_100, ignition_delay) %>%
-  filter(complete.cases(.))
-
-
-dim(pca_data_2024)
-
-any(is.na(pca_data_2024)) 
-
-flam_pca_2024 <- prcomp(pca_data_2024[,-1], scale=TRUE)
-
-summary(flam_pca_2024)
-
-flam_loadings_2024 <- flam_pca_2024$rotation[ ,1:2] 
-
-biplot(flam_pca_2024)
-
-
-pca_data_2024$PC1 <- flam_pca_2024$x[ ,1]
-pca_data_2024$PC2 <- flam_pca_2024$x[ ,2]
-
-pca_data_2024 <- pca_data_2024 %>%
-  dplyr::select(sample_id, PC1, PC2)
-
-
-final_data_2024 <- left_join(alldata_2024, pca_data_2024) %>%
-  filter(sample_id %in% pca_data_2024$sample_id) %>%
-  filter(sample_id != "FRT19")
-
-dim(final_data_2024)
-
-
-###############################################################################
-# Cleaning the environment, leaving the alldata for exploratory figures
-###############################################################################
-
-rm("burn_trials","burn_trials_2024", "flam_loadings", "flam_loadings_2024", "hobos_wider",
-   "pca_data", "hobos_wider_2024", "pca_data_2024", "filtered_sample_id")
+rm("hobos_wider", "pca_data")
 

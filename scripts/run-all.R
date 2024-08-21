@@ -10,45 +10,32 @@
 
 source("./scripts/ggplot_theme.R")
 
-DATA_CACHE_DIR <- "./results"
 
 #############################################################################
 # read, clean and merged all the data Produces "alldata"
 #############################################################################
 
-source("./scripts/read_data.R")
+source("./scripts/read_data.R") # This will produce alldata as the combined dataset for 2023 and 2024
 
 #############################################################################
 # Read hobos data
 ############################################################################
 
-#source("./scripts/read_hobos.R")
+DATA_CACHE_DIR <- "./results"
 
-#source("./scripts/read_hobos_2024.R")
+#source("./scripts/read_hobos.R") # read this once, this will produce hobos_wider.RDS for both 2023 and 2024
 
+hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 
 ###########################################################################
 # produce pca_data object
 ##########################################################################
 
 source("./scripts/flam_pca.R")
-# flam_pca creates the two main data files sued later: final_data (2023 data)
-# and final_data_2024 (summer 2024 data)
 
-source("./scripts/hobo_bench_drying.R") # only 2023 stuff
-source("./scripts/analysis.R")  # only uses final_data (2023).
-source("./scripts/segmented.R") # only 2023
-source("./scripts/figures.R") # only 2023
+# flam_pca creates one main data file used later: final_data 
 
-#########################################################################
-# Exploratory  figures done by Dr. Schwilk, this scripts is used
-# alldata which has 148 observations and some of columns have NA
-# and will return  rows containing non-finite values (`stat_smooth()`). 
-# rows containing missing values (`geom_point()`). 
-# Removed 3 rows containing non-finite values (`stat_smooth()`). 
-# Removed 3 rows containing missing values (`geom_point()`)
-########################################################################
-
-source("./scripts/exploratory_figures.R") # 2023 and 2024
-
-
+source("./scripts/hobo_bench_drying.R") 
+source("./scripts/analysis.R")  
+#source("./scripts/segmented.R") 
+#source("./scripts/figures.R")

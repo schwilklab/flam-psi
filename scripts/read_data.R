@@ -22,148 +22,71 @@ MASS_DISK_2 <- 53.21 # g
 
 
 ###############################################################################
-## Read all the data files for 2023
+## Read all the data files
 ###############################################################################
 
-species <- read_csv("./data/2023/species.csv")
+species <- read_csv("./data/2024/species.csv")
 
-samples <-  read_csv("./data/2023/samples.csv") 
+samples <-  read_csv("./data/combined/samples.csv") 
 
-water_potentials <- read_csv("./data/2023/water_potentials.csv") 
+water_potentials_fmc <- read_csv("./data/combined/wp_fmc.csv") 
 
-fmc <- read_csv("./data/2023/fmc.csv")
+burn_trials <- read_csv("./data/combined/burn_trials.csv")
 
-burn_trials <- read_csv("./data/2023/burn_trials.csv")
+burn_trials_weather <- read_csv("./data/combined/burn_trials_weather.csv")
 
-burn_trials_wx <- read_csv("./data/2023/burn_trials_wx.csv")
+leaf_traits <- read_csv("./data/combined/leaf_traits.csv")
 
+juniperus_leaf_traits <- read_csv("./data/combined/juniperus_lma.csv")
+
+time_wp <- read_csv("./data/2024/time_wp.csv")
+
+pv_summary <- read_csv("./data/2024/pv_curve_summary.csv")
 
 ###############################################################################
-## Cleaning the data 2023
+## Cleaning the data
 ##############################################################################
 
 species <- species %>%
   mutate(display_name = paste(substr(genus, 1,1), ". ", specific_epithet, sep="")) %>%
   dplyr::select(spcode, display_name, scientific_name)
 
-samples <-  samples %>% 
-  dplyr::select(sample_id, spcode)
-
-water_potentials <- water_potentials %>%
-  mutate(wp = -wp) %>%
-  dplyr::select(sample_id, wp)
-
-fmc <- fmc %>%
-  mutate(fmc=((fresh_mass-dry_mass)/dry_mass)*100) %>%
-  mutate(fmc = round(fmc, 2)) %>%
-  dplyr::select(sample_id, fmc)
-
-burn_trials_wx <- burn_trials_wx %>% 
-  mutate(massloss = (mass_pre - mass_post)/mass_pre) %>%
-  dplyr::select(sample_id, rh, temperature, wind_speed, mass_pre, massloss)
-
-###############################################################################
-## burn trials
-##############################################################################
-
-burn_trials <- read_csv("./data/2023/burn_trials.csv") %>%
-  mutate(heat1 = (disc1_post - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
-         heat2 = (disc2_post - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
-         heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
-         pre_combustion = pre_combustion=="yes" ,
-         pre_burning_temp = (disc1_pre + disc2_pre)/2) %>%
-  dplyr::select(sample_id, pre_combustion, ignition_delay, flame_duration,
-         smoke_duration, flame_height, heat_release_j, vol_burned,
-         self_ignition, self_ig_start, pre_burning_temp)
-
-# Correct heat release to set lowest value at 0 (all relative anyway)
-burn_trials$heat_release_j <- burn_trials$heat_release_j - min(burn_trials$heat_release_j, na.rm=TRUE)
-
-
-############################################################################
-## Combining them all
-############################################################################
-
-burn_trials <- left_join(burn_trials, burn_trials_wx)
-
-alldata <- left_join(samples, species) %>% left_join(water_potentials) %>%
-  left_join(fmc) %>% left_join(burn_trials)
-
-##########################################################################
-# Converting spcode as factor and removing one outlier for JUPI because
-# this sample is showing exceptionally high fmc
-########################################################################
-
-alldata$spcode <- as.factor(alldata$spcode)
-
-alldata <- alldata %>%
-   filter(sample_id != "JDK31") 
-
-dim(alldata)
-
-################################################################################
-# Initially creating two subset of final_data because we might need them later
-# Initially samples without self ignition and then samples which ignited 
-# within 20 seconds
-###############################################################################
-
-without_self_ignition <- alldata %>%
-  filter(ignition_delay != 0)
-
-dim(without_self_ignition) 
-
-filtered_data <- without_self_ignition %>%
-  filter(ignition_delay <= 20)
-
-dim(filtered_data)
-
-filtered_sample_id <- filtered_data$sample_id
-
-alldata$ignition_delay <- log(alldata$ignition_delay + 1)
-
-without_self_ignition <- without_self_ignition %>%
-  mutate(ignition_delay = log(ignition_delay + 1))
-
-
-
-###############################################################################
-## Read all the data files for 2024
-###############################################################################
-
-species_2024 <- read_csv("./data/2024/species.csv")
-
-samples_2024 <-  read_csv("./data/2024/samples.csv") 
-
-water_potentials_fmc <- read_csv("./data/2024/wp_fmc.csv") 
-
-leaf_traits <- read_csv("./data/2024/leaf_traits.csv")
-
-juniperus_leaf_traits <- read_csv("./data/2024/juniperus_lma.csv")
-
-burn_trials_2024 <- read_csv("./data/2024/burn_trials.csv")
-
-burn_trials_weather_2024 <- read_csv("./data/2024/burn_trials_weather.csv")
-
-time_wp <- read_csv("./data/2024/time_wp.csv")
-
-######################################################################################
-#  Data cleaning 2024
-#####################################################################################
-
-species_2024 <- species_2024 %>%
-  mutate(display_name = paste(substr(genus, 1,1), ". ", specific_epithet, sep="")) %>%
-  dplyr::select(spcode, display_name, scientific_name)
-
 wp_fmc <- water_potentials_fmc %>%
-  mutate(wp = -wp) %>%
+  mutate(wp = -1*wp) %>%
   mutate(lfmc = ((leaf_fresh_mass - leaf_dry_mass)/leaf_dry_mass)*100) %>%
   mutate(lfmc = round(lfmc, 2)) %>%
   mutate(cmc = ((twig_leaf_fresh_mass - twig_leaf_dry_mass)/twig_leaf_dry_mass)*100) %>%
   mutate(cmc = round(cmc, 2)) %>%
   dplyr::select(sample_id, wp, lfmc, cmc, twig_leaf_fresh_mass, twig_leaf_dry_mass)
 
-burn_trials_weather_2024 <- burn_trials_weather_2024 %>% 
-  dplyr::select(sample_id, rh, temp, wind_speed)
+dim(wp_fmc)
+
+burn_trials_weather <- burn_trials_weather %>%
+  mutate(spcode = ifelse(spcode == "PHTR", "RHTR", spcode))
+
+dim(burn_trials_weather)
+
+###############################################################################
+## burn trials
+##############################################################################
+
+burn_trials <- burn_trials %>%
+  mutate(year = format(as.Date(date, format = "%m/%d/%y"), "%Y")) %>%
+  mutate(mass_pre = ifelse(year == 2023, mass_pre*1000, mass_pre),
+         mass_post = ifelse(year == 2023, mass_post*1000, mass_post)) %>%
+  mutate(heat1 = (max_temp - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
+         heat2 = (max_temp - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
+         heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
+         pre_burning_temp = (disc1_pre + disc2_pre)/2) %>%
+  mutate(massloss = (mass_pre - mass_post)/mass_pre) %>%
+  dplyr::select(sample_id, year, pre_combustion, ignition_delay, flame_duration,
+                flame_height, heat_release_j, vol_burned, massloss,
+                self_ignition, pre_burning_temp, mass_pre)
+
+# Correct heat release to set lowest value at 0 (all relative anyway)
+burn_trials$heat_release_j <- burn_trials$heat_release_j - min(burn_trials$heat_release_j, na.rm=TRUE)
+
+dim(burn_trials)
 
 ##########################################################################################
 # Leaf traits
@@ -178,6 +101,7 @@ ldmc_leaf_length <- leaf_traits %>%
   ungroup() %>%
   dplyr::select(sample_id, ldmc, leaf_length)
 
+dim(ldmc_leaf_length)
 
 juniperus_leaf_area_2024 <- juniperus_leaf_traits %>% 
   mutate(branchlet_radius_cm = branchlet_diameter_mm/20,  # mm to cm by dividing by 10 and dividing by to 2 to get the radius 
@@ -191,14 +115,16 @@ juniperus_leaf_area_2024 <- juniperus_leaf_traits %>%
   mutate(leaf_area_per_leaflet = round(leaf_area_per_leaflet, 2)) %>%
   dplyr::select(sample_id, leaf_area, leaf_area_per_leaflet)
 
+dim(juniperus_leaf_area_2024)
 
 lma_leaf_area <- leaf_traits %>%
-  filter(! spcode %in% c("JUPI", "JUAS")) %>%
+  filter(! sample_id %in% juniperus_leaf_area_2024$sample_id) %>%
   mutate(leaf_area_per_leaflet = leaf_area/5) %>%
   mutate(leaf_area_per_leaflet = round(leaf_area_per_leaflet, 2)) %>%
   dplyr::select(sample_id, leaf_area, leaf_area_per_leaflet) %>%
   rbind(juniperus_leaf_area_2024)
-  
+
+dim(lma_leaf_area)
 
 all_leaf_traits <- leaf_traits %>%
   dplyr::select(sample_id, lma_dry) %>%
@@ -208,60 +134,61 @@ all_leaf_traits <- leaf_traits %>%
   mutate(lma = round(lma, 3)) %>%
   dplyr::select(- lma_dry)
 
-
-burn_trials_2024 <- burn_trials_2024 %>%
-  mutate(heat1 = (max_temp - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
-         heat2 = (max_temp - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
-         heat_release_j = (heat1 + heat2)/2, # average heat release of two disks
-         pre_burning_temp = (disc1_pre + disc2_pre)/2) %>%
-  mutate(massloss = (mass_pre - mass_post)/mass_pre) %>%
-  dplyr::select(sample_id, pre_combustion, ignition_delay, flame_duration,
-                flame_height, heat_release_j, vol_burned, massloss,
-                self_ignition, pre_burning_temp, mass_pre)
-
-# Correct heat release to set lowest value at 0 (all relative anyway)
-burn_trials_2024$heat_release_j <- burn_trials_2024$heat_release_j - min(burn_trials_2024$heat_release_j, na.rm=TRUE)
-
-alldata_2024 <- left_join(samples_2024, species_2024) %>% left_join(wp_fmc) %>%
-  left_join(all_leaf_traits) %>% left_join(burn_trials_2024) %>%
-  mutate(total_dry_mass = mass_pre*(twig_leaf_dry_mass/twig_leaf_fresh_mass)) %>%
-  dplyr::select(- mass_pre, - twig_leaf_dry_mass, -twig_leaf_fresh_mass)
-
-#View(alldata_2024)
-
-alldata_2024 <- alldata_2024 %>%
-  filter(!spcode %in% c("CELAR", "QUVI", "FOPU2", "SEBE2")) %>%
-  filter(! sample_id %in% c("ST38", "ST39")) %>%
-  mutate(across(c(notes, sex), ~ replace_na(., ""))) %>%
-  mutate(spcode = ifelse(sex == "female", paste0(spcode, "F"), spcode)) %>%
-  dplyr::select(-species)
-
-
-#View(alldata_2024)
-
+dim(all_leaf_traits)
 
 #######################################################################################
 # Time vs wp 
 ######################################################################################
 
-
-
-
-
-time_wp <- time_wp%>%
+time_wp <- time_wp %>%
+  mutate(fmc = ((fresh_weight - dry_weight)/dry_weight)*100) %>%
   mutate(date_time = mdy_hms(paste(time_wp$date, time_wp$time))) %>%
   group_by(sample_id) %>%
   mutate(hours = as.numeric(difftime(date_time, first(date_time), units = "hours")),
          hours = round(hours, 2)) %>%
-  left_join(species_2024, by = "spcode") %>%
+  left_join(species, by = "spcode") %>%
   dplyr::select(-scientific_name)
 
+pv_summary <- pv_summary %>%
+  dplyr::select(-saturated_moisture_content) %>%
+  mutate(swc = 100*swc,
+         swc = round(swc, 2))
+
+############################################################################
+## Combining them all
+############################################################################
+
+burn_trials <- burn_trials %>%
+  full_join(burn_trials_weather, by = "sample_id")
+
+dim(burn_trials)
+
+samples <- left_join(samples, species)
+
+dim(samples)
+
+alldata <- samples %>% full_join(wp_fmc) %>%
+  full_join(all_leaf_traits) %>% full_join(burn_trials) %>%
+  mutate(total_dry_mass = mass_pre*(twig_leaf_dry_mass/twig_leaf_fresh_mass)) %>%
+  dplyr::select(- mass_pre, - twig_leaf_dry_mass, -twig_leaf_fresh_mass) %>%
+  filter(!spcode %in% c("CELAR", "QUVI", "FOPU2", "SEBE2")) %>%
+  mutate(across(c(notes, sex), ~ replace_na(., ""))) %>%
+  mutate(spcode = ifelse(sex == "female" & spcode == "JUPI", paste0(spcode, "F"), spcode)) %>%
+  dplyr::select(-species, -notes, -sex) %>%
+  filter(! is.na(heat_release_j)) %>%
+  filter(! is.na(vol_burned)) %>%
+  filter(! is.na(wp)) %>%
+  mutate(wp = ifelse(spcode == "DITE3" & wp == -7, -7.83, wp)) %>%
+  mutate(wp = ifelse(spcode == "MATR3" & wp == -7, -8.06, wp)) %>%
+  mutate(wp = ifelse(spcode == "PRGL2" & wp == -7, -8.24, wp)) 
+  
+dim(alldata) # 356
+
+
 ######################################################################################
-## Cleaning up work space, only keeping the alldata
+## Cleaning up work space, only keeping the alldata, pv_summary and time_wp
 ######################################################################################
 
-rm("burn_trials", "burn_trials_wx", "fmc", "MASS_DISK_1", "MASS_DISK_2", "samples",
-   "species", "SPECIFIC_HEAT_AL", "water_potentials", "species_2024", "burn_trials_2024",
-   "all_leaf_traits", "lma_leaf_area", "juniperus_leaf_area_2024", "ldmc_leaf_length",
-   "burn_trials_weather_2024", "wp_fmc", "juniperus_leaf_traits", "leaf_traits",
-   "samples_2024", "water_potentials_fmc")
+rm("all_leaf_traits", "burn_trials",  "burn_trials_weather", "juniperus_leaf_area_2024",
+   "juniperus_leaf_traits", "ldmc_leaf_length", "leaf_traits", "lma_leaf_area", "MASS_DISK_1",
+   "MASS_DISK_2", "samples", "species", "SPECIFIC_HEAT_AL", "water_potentials_fmc", "wp_fmc")

@@ -9,25 +9,30 @@
 TZ = "CST6CDT"
 DATA_CACHE_DIR <- "./results"
 
-library(stringr)
-library(lubridate)
-library(dplyr)
-library(tidyr)
 ####################################################################
 
 burn_trials <- read.csv("./data/2023/burn_trials.csv", stringsAsFactors = FALSE)
 
-
+burn_trials_2024 <- read.csv("./data/2024/burn_trials.csv", stringsAsFactors = FALSE)
 
 #####################################################################
 # Cleaning trial data
 #####################################################################
 
 burn_trials <- burn_trials %>%
+  mutate(hobo_start_time = mdy_hm(str_c(date, " ", start_time), tz = TZ) +
+      dseconds(120 + ignition_delay)) %>%
+  mutate(hobo_start_time = if_else(self_ignition == 1, mdy_hm(str_c(date, " ", start_time), tz = TZ) + dseconds(self_ig_start),
+                                   hobo_start_time)) %>%
+  mutate(hobo_end_time = hobo_start_time +
+      dseconds(flame_duration)) %>%
+  mutate(interval = lubridate::interval(hobo_start_time, hobo_end_time))
+
+burn_trials_2024 <- burn_trials_2024 %>%
+  filter(! sample_id %in% c("FT07", "ST21", "ST28")) %>%
   mutate(hobo_start_time = mdy_hm(str_c(date, " ",start_time), tz = TZ) +
            dseconds(120 + ignition_delay),
-         hobo_end_time = hobo_start_time +
-           dseconds(flame_duration + smoke_duration),
+         hobo_end_time = hobo_start_time + dseconds(flame_duration),
          interval = lubridate::interval(hobo_start_time, hobo_end_time))
 
 
@@ -71,6 +76,10 @@ flam_left <- concat_hobo_files(list.files("./data/2023/burn_hobos",
                                "flam_left")
 
 
+flam_left_2024 <- concat_hobo_files(list.files("./data/2024/burn_hobos",
+                                          full.names = TRUE, recursive = TRUE,
+                                          pattern = "flam.left*.csv"),
+                               "flam_left")
 
 
 
@@ -83,6 +92,10 @@ flam_mid <- concat_hobo_files(list.files("./data/2023/burn_hobos",
                                          pattern = "flam.mid*.csv"),
                               "flam_mid")
 
+flam_mid_2024 <- concat_hobo_files(list.files("./data/2024/burn_hobos",
+                                         full.names = TRUE, recursive = TRUE,
+                                         pattern = "flam.mid*.csv"),
+                              "flam_mid")
 
 
 #####################################################################
@@ -96,6 +109,10 @@ flam_right <- concat_hobo_files(list.files("./data/2023/burn_hobos",
 
 
 
+flam_right_2024 <- concat_hobo_files(list.files("./data/2024/burn_hobos",
+                                           full.names = TRUE, recursive = TRUE,
+                                           pattern = "flam.right*.csv"),
+                                "flam_right")
 
 #####################################################################
 # Getting all the hobo files in a single data frame
@@ -104,17 +121,20 @@ flam_right <- concat_hobo_files(list.files("./data/2023/burn_hobos",
 hobos <- full_join(flam_left, flam_mid, by = "time") %>% 
   full_join(flam_right,  by = "time")
 
+hobos_2024 <- full_join(flam_left_2024, flam_mid_2024, by = "time") %>% 
+  full_join(flam_right_2024,  by = "time")
+
 
 
 #####################################################################
 # Function to assign the labels after matching the trails time hobos
 #####################################################################
 
-get_trial_label <- function(time) {
-  matches <- time %within% burn_trials$interval
-  if(! any(matches)) return(NA)
-  ## TODO: rewrite below to be clearer that there should be just one match.
-  return(burn_trials$sample_id[which.max(matches)])
+get_trial_label <- function(time, burn_trials_data) {
+  matches <- time %within% burn_trials_data$interval
+  if(!any(matches)) return(NA)
+  # Return the sample_id corresponding to the match
+  return(burn_trials_data$sample_id[which.max(matches)])
 }
 
 
@@ -122,12 +142,15 @@ get_trial_label <- function(time) {
 # Assigning the labels
 #####################################################################
 
-hobos$sample_id <- unlist(sapply(hobos$time, get_trial_label))
-
+hobos$sample_id <- unlist(sapply(hobos$time, get_trial_label, burn_trials_data = burn_trials))
 
 unique(hobos$sample_id) 
-length(unique(hobos$sample_id))  # 95 as of 2023-06-16
+length(unique(hobos$sample_id))
 
+hobos_2024$sample_id <- unlist(sapply(hobos_2024$time, get_trial_label, burn_trials_data = burn_trials_2024))
+
+unique(hobos_2024$sample_id) 
+length(unique(hobos_2024$sample_id))  
 
 #####################################################################
 # Getting the hobos as long format to summarise the data by 
@@ -135,6 +158,7 @@ length(unique(hobos$sample_id))  # 95 as of 2023-06-16
 #####################################################################
 
 hobos_long <- hobos %>%
+  rbind(hobos_2024) %>%
   gather(key = "position",
          value = "temperature", -time, -sample_id)
 
@@ -168,8 +192,6 @@ hobos_wider <- hobo_temp_sum %>%
 
 dim(hobos_wider)
 
-
-## Save RDS data. TODO
 saveRDS(hobos_wider, file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 
 ########################################################################
@@ -177,5 +199,6 @@ saveRDS(hobos_wider, file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 ########################################################################
 rm("concat_hobo_files", "get_trial_label", "read_hobo_file",
    "hobos_long", "flam_right","flam_mid","flam_left","TZ",
-   "hobo_temp_sum", "hobos")
+   "hobo_temp_sum", "hobos", "hobos_2024",  "flam_right_2024","flam_mid_2024","flam_left_2024",
+   "burn_trials", "burn_trials_2024")
 

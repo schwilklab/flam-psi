@@ -1,84 +1,141 @@
 # This script is for conducting mixed effect model,
 # and generating anova table 
 ################################################################################
-# Initially water potential and fmc relationship
+# Initially water potential and leaf fuel moisture and canopy fuel moisture relationship
 ################################################################################
 
-wp_fmc_model <- lm(fmc ~  wp*spcode, data = final_data)
+wp_lfmc_model <- lm(lfmc ~  wp*spcode, data = filter(final_data, year == 2024))
 
-anova(wp_fmc_model)
+anova(wp_lfmc_model)
 
-summary(wp_fmc_model)
+summary(wp_lfmc_model)
+
+wp_cmc_model <- lm(cmc ~  wp*spcode, data = filter(final_data, year == 2024))
+
+anova(wp_cmc_model)
+
+summary(wp_cmc_model)
+
+
+AIC(wp_lfmc_model, wp_cmc_model) # water potential is more tightly linked to moisture
+# content of twig with leaf than just leaf moisture content!
 
 #############################################################################
-# Does the relationship between ignition delay and water status 
-# varies among species? 
+# Which one between water potential and cmc is better in predicting 
+# shoot flammability?
 #########################################################################
 
-fmc_wp_species_ignition <- lm(ignition_delay ~ fmc*wp*spcode, data = final_data)
+cmc_wp_species_ignition <- lm(log10(ignition_delay + 1) ~ cmc*wp*spcode, 
+                              data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
-anova(fmc_wp_species_ignition)
+anova(cmc_wp_species_ignition)
 
-summary(fmc_wp_species_ignition)
+summary(cmc_wp_species_ignition)
 
-############################################################################
-# Samples without self ignition
-##########################################################################
-
-fmc_wp_species_ignition_withoutselfig <- lm(ignition_delay ~ fmc*wp*spcode, 
-                                            data = filter(final_data, self_ignition != 1))
-
-anova(fmc_wp_species_ignition_withoutselfig)
-
-summary(fmc_wp_species_ignition_withoutselfig)
 
 ##############################################################################
 # which one is better in predicting ignitibility
 # between fmc and wp?
 ##############################################################################
 
-wp_species_ignition <- lm(ignition_delay ~ wp*spcode, data = filter(final_data, self_ignition != 1))
+wp_species_ignition <- lm(log10(ignition_delay + 1) ~ wp*spcode, 
+                          data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
-fmc_species_ignition <- lm(ignition_delay ~ fmc*spcode, data = filter(final_data, self_ignition != 1))
+cmc_species_ignition <- lm(log10(ignition_delay + 1) ~ cmc*spcode, 
+                           data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
-species_ignition <- lm(ignition_delay ~ spcode, data = filter(final_data, self_ignition != 1))
+species_ignition <- lm(log10(ignition_delay +1) ~ spcode, 
+                       data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
-wp_species_ignition_pre_temp <- lm(ignition_delay ~ wp*spcode + pre_burning_temp + wind_speed, data = filter(final_data, self_ignition != 1))
+wp_species_ignition_pre_temp <- lm(log10(ignition_delay +1) ~ cmc*wp*spcode + pre_burning_temp + wind_speed, 
+                                   data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
-#wp_ignition <- lm(ignition_delay ~ wp, data = filter(final_data, self_ignition != 1))
 
-#fmc_ignition <- lm(ignition_delay ~ fmc, data = filter(final_data, self_ignition != 1))
-
-AIC(fmc_wp_species_ignition_withoutselfig, wp_species_ignition,
-    fmc_species_ignition, species_ignition, wp_species_ignition_pre_temp) # wp
+AIC(cmc_wp_species_ignition, wp_species_ignition,
+    cmc_species_ignition, species_ignition , wp_species_ignition_pre_temp) # wp
 
 ###########################################################################
 # # Does the relationship between temperature integration and water status 
 # varies among species?
 #############################################################################
 
-fmc_wp_species_degsec <- lm(degsec_100 ~ fmc*wp*spcode, data = filtered_data)
+short_ignition <- final_data %>%
+  filter(ignition_delay <= 60)
 
-anova(fmc_wp_species_degsec)
+cmc_wp_species_heat_release <- lm(heat_release_j ~ cmc*wp*spcode,
+                            data = filter(short_ignition, year == 2024 & spcode != "JUPIF"))
 
-summary(fmc_wp_species_degsec)
+anova(cmc_wp_species_heat_release)
+
+summary(cmc_wp_species_heat_release)
 
 ##############################################################################
 # which one is better in predicting temperature integration
 # between fmc and wp?
 ##############################################################################
 
-wp_species_degsec <- lm(degsec_100 ~ wp*spcode, data = filtered_data)
+wp_species_heat_release <- lm(heat_release_j ~ wp*spcode,
+                              data = filter(short_ignition, year == 2024 & spcode != "JUPIF"))
 
-fmc_species_degsec <- lm(degsec_100 ~ fmc*spcode, data = filtered_data)
+cmc_species_heat_release <- lm(heat_release_j ~ cmc*spcode,
+                         data = filter(short_ignition, year == 2024 & spcode != "JUPIF"))
 
-species_degsec <- lm(degsec_100 ~ spcode, data = filtered_data)
+species_heat_release <- lm(heat_release_j ~ spcode,
+                     data = filter(short_ignition, year == 2024 & spcode != "JUPIF"))
 
-wp_species_degsec_pre_temp <- lm(degsec_100 ~ wp*spcode + pre_burning_temp + wind_speed, data = filtered_data)
 
-#wp_degsec <- lm(degsec_100 ~ wp, data = filtered_data)
 
-#fmc_degsec <- lm(degsec_100 ~ fmc, data = filtered_data)
+AIC(cmc_wp_species_heat_release, wp_species_heat_release, cmc_species_heat_release,
+    species_heat_release) 
 
-AIC(fmc_wp_species_degsec, species_degsec, wp_species_degsec, fmc_species_degsec, wp_species_degsec_pre_temp) # species
+
+cmc_species__heat_release_pre_burn_temp <- lm(heat_release_j ~ cmc*spcode + pre_burning_temp + wind_speed,
+                           data = filter(short_ignition, year == 2024 & spcode != "JUPIF"))
+
+
+AIC(cmc_species_heat_release, cmc_species__heat_release_pre_burn_temp)
+
+
+anova(cmc_species_heat_release)
+
+
+####################################################################################################################
+# How about both year
+#####################################################################################################################
+
+cmc_wp_species_heat_release_2324 <- lm(heat_release_j ~ cmc*wp*spcode,
+                                  data = filter(short_ignition, spcode != "JUPIF"))
+
+anova(cmc_wp_species_heat_release_2324)
+
+summary(cmc_wp_species_heat_release_2324)
+
+##############################################################################
+# which one is better in predicting temperature integration
+# between fmc and wp?
+##############################################################################
+
+wp_species_heat_release_2324 <- lm(heat_release_j ~ wp*spcode,
+                              data = filter(short_ignition, spcode != "JUPIF"))
+
+cmc_species_heat_release_2324 <- lm(heat_release_j ~ cmc*spcode,
+                               data = filter(short_ignition, spcode != "JUPIF"))
+
+species_heat_release_2324 <- lm(heat_release_j ~ spcode,
+                           data = filter(short_ignition, spcode != "JUPIF"))
+
+
+
+AIC(cmc_wp_species_heat_release_2324, wp_species_heat_release_2324, cmc_species_heat_release_2324,
+    species_heat_release_2324) 
+
+
+cmc_species__heat_release_pre_burn_temp_2324 <- lm(heat_release_j ~ wp*cmc*spcode + pre_burning_temp + wind_speed,
+                                              data = filter(short_ignition, spcode != "JUPIF"))
+
+
+AIC(cmc_wp_species_heat_release_2324, cmc_species__heat_release_pre_burn_temp_2324)
+
+
+anova(cmc_wp_species_heat_release_2324)
 
