@@ -12,9 +12,11 @@ library(extrafont)
 loadfonts()
 
 # constants and theme for publications
-schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")
+#schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")
 #EC4E15
 #362908
+schwilkcolors <- c("#4A4C4F", "#403F2D", "#AF5F42", "#8F7955", "#EC4E15",
+                   "#EE722E", "#D68D18", "#A9B678", "#E3C477")
 
 textsize <- 12
 smsize <- textsize-2
@@ -30,7 +32,7 @@ ppi <- 300 # for raster formats
 ## Some specific geoms to add
 
 dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
-bestfit <- geom_smooth(method="lm",se = FALSE, linewidth=1.5)
+bestfit <- geom_smooth(method="lm",se = FALSE, size = 1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun.y=fun, geom=geom, size = 3, ...)
@@ -41,8 +43,8 @@ pubtheme <- theme_grey() +
                                     size = textsize, angle = 90, vjust=0.3),
         axis.title.x = element_text(family=fontfamily, size = textsize, vjust=-0.3),
         axis.ticks = element_line(colour = "black"),
-        panel.background = element_rect(linewidth = 1.6, fill = NA),
-        panel.border = element_rect(linewidth = 1.6, fill=NA),
+        panel.background = element_rect(size = 1.6, fill = NA),
+        panel.border = element_rect(size = 1.6, fill=NA),
         axis.text.x  = element_text(family=fontfamily, size=axissz, color="black"),
         axis.text.y  = element_text(family=fontfamily, size=axissz, color = "black"),
         ## strip.text.x = element_text(family=fontfamily, size = axissz, face="italic"),

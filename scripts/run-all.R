@@ -35,7 +35,8 @@ source("./scripts/flam_pca.R")
 
 # flam_pca creates one main data file used later: final_data 
 
-source("./scripts/hobo_bench_drying.R") 
-source("./scripts/analysis.R")  
+source("./scripts/analysis.R") 
+source("./scripts/sensitivity_analysis.R")
 #source("./scripts/segmented.R") 
 #source("./scripts/figures.R")
+#source("./scripts/hobo_bench_drying.R") 

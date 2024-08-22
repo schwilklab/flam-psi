@@ -159,7 +159,7 @@ pv_summary <- pv_summary %>%
 ############################################################################
 
 burn_trials <- burn_trials %>%
-  full_join(burn_trials_weather, by = "sample_id")
+  left_join(burn_trials_weather, by = "sample_id")
 
 dim(burn_trials)
 
@@ -184,7 +184,6 @@ alldata <- samples %>% full_join(wp_fmc) %>%
   
 dim(alldata) # 356
 
-
 ######################################################################################
 ## Cleaning up work space, only keeping the alldata, pv_summary and time_wp
 ######################################################################################
@@ -192,3 +191,4 @@ dim(alldata) # 356
 rm("all_leaf_traits", "burn_trials",  "burn_trials_weather", "juniperus_leaf_area_2024",
    "juniperus_leaf_traits", "ldmc_leaf_length", "leaf_traits", "lma_leaf_area", "MASS_DISK_1",
    "MASS_DISK_2", "samples", "species", "SPECIFIC_HEAT_AL", "water_potentials_fmc", "wp_fmc")
+
