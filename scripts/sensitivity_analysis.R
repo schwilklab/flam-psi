@@ -12,20 +12,25 @@ library(lsmeans)
 # Next part is summarising data
 ####################################################################################
 
-ajb_data <- final_data %>%
+ajb_heat_release_data <- final_data %>%
   filter(year == 2024) %>%
   filter(spcode != "JUPIF") %>%
   filter(ignition_delay <= 60)
 
-dim(ajb_data)
+dim(ajb_heat_release_data)
+
+ajb_ignition_delay_data <- final_data %>%
+  filter(spcode != "JUPIF")
+
+dim(ajb_ignition_delay_data)
 
 ####################################################################################
 # Summarising leaf traits data
 #####################################################################################
 
-leaf_sum <- ajb_data %>%
+leaf_sum <- final_data %>%
   group_by(spcode) %>%
-  summarize(across(c(lma, ldmc, leaf_area, leaf_area_per_leaflet), mean)) %>%
+  summarize(across(c(lma, ldmc, leaf_area, leaf_area_per_leaflet), ~ mean(.x, na.rm = TRUE))) %>%
   mutate(ldmc = round(ldmc, 2),
          lma = round(lma, 2),
          leaf_area = round(leaf_area, 2),
@@ -55,14 +60,18 @@ pv_sum
 # heat release and ignition
 ######################################################################################
 
-high_fmc_sum <- ajb_data %>%
-  filter(wp >= -2) %>%
+high_fmc_sum <- ajb_heat_release_data %>%
   group_by(spcode, display_name) %>%
   summarize(across(c(ignition_delay, heat_release_j), mean)) %>%
   mutate(ignition_delay = round(ignition_delay, 2),
          heat_release_j = round(heat_release_j, 2))
 
 high_fmc_sum
+
+ig_heat_release_cor <- cor.test(high_fmc_sum$ignition_delay, high_fmc_sum$heat_release_j,
+                                method = "spearman")
+
+ig_heat_release_cor
 
 #######################################################################################
 # Combining these three
@@ -82,7 +91,7 @@ species_sorted <- high_fmc_sum %>% arrange(ignition_delay) %>% dplyr::select(dis
 species_sorted <- unname(unlist(as.vector(species_sorted[,2])))
 
 high_fmc_sum$display_name <- factor(high_fmc_sum$display_name, levels = species_sorted)
-ajb_data$display_name <- factor(ajb_data$display_name, levels = species_sorted)
+ajb_ignition_delay_data$display_name <- factor(ajb_ignition_delay_data$display_name, levels = species_sorted)
 final_data$display_name <- factor(final_data$display_name, levels = species_sorted)
 
 names(schwilkcolors) <- species_sorted
@@ -92,7 +101,7 @@ schwilkpalette <- scale_color_manual(name = "display_name", values=schwilkcolors
 # water potential vs ignition_delay
 ####################################################################################################
 
-species_wp_ign_sensitivity <- ajb_data %>%
+species_wp_ign_sensitivity <- ajb_ignition_delay_data %>%
   nest(data = c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(ignition_delay ~ wp, data = .x)),
          tidied = map(fit, tidy)) %>%
@@ -106,7 +115,7 @@ species_wp_ign_sensitivity
 # canopy moisture content vs ignition_delay
 ####################################################################################################
 
-species_cmc_ign_sensitivity <- ajb_data %>%
+species_cmc_ign_sensitivity <- ajb_ignition_delay_data %>%
   nest(data = c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(ignition_delay ~ cmc, data = .x)),
          tidied = map(fit, tidy)) %>%
@@ -120,7 +129,7 @@ species_cmc_ign_sensitivity
 # Now heat release, initially wp vs heat release
 ####################################################################################################
 
-species_wp_heat_release_sensitivity <- ajb_data %>%
+species_wp_heat_release_sensitivity <- ajb_heat_release_data %>%
   nest(data = c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(heat_release_j ~ wp, data = .x)),
          tidied = map(fit, tidy)) %>%
@@ -134,7 +143,7 @@ species_wp_heat_release_sensitivity
 # cmc vs heat release
 ####################################################################################################
 
-species_cmc_heat_release_sensitivity <- ajb_data %>%
+species_cmc_heat_release_sensitivity <- ajb_heat_release_data %>%
   nest(data = c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(heat_release_j ~ cmc, data = .x)),
          tidied = map(fit, tidy)) %>%
@@ -231,7 +240,7 @@ anova(pv_cmc_heat_release_mod)
 ## Sensitivity of fuel moisture to wp
 ################################################################################################
 
-species_wp_cmc <- ajb_data %>%
+species_wp_cmc <- final_data %>%
   nest(data = -spcode) %>%
   mutate(fit = map(data, ~ lm(cmc ~ wp, data = .x)),
          tidied = map(fit, tidy)) %>%
@@ -261,7 +270,7 @@ summary(cmc_ig_shoot_capacitance)
 anova(cmc_ig_shoot_capacitance)
 
 
-wp_heat_release_shoot_capacitance <- lm(wp_heat_rlease_sens ~ 1/wp_sens*lma, data = species_sum)
+wp_heat_release_shoot_capacitance <- lm(wp_heat_rlease_sens ~ 1/wp_sens, data = species_sum)
 
 summary(wp_heat_release_shoot_capacitance)
 

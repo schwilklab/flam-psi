@@ -4,20 +4,32 @@
 # Initially water potential and leaf fuel moisture and canopy fuel moisture relationship
 ################################################################################
 
-wp_lfmc_model <- lm(lfmc ~  wp*spcode, data = filter(final_data, year == 2024))
+wp_lfmc_model <- lm(lfmc ~ wp*spcode, data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
 anova(wp_lfmc_model)
 
 summary(wp_lfmc_model)
 
-wp_cmc_model <- lm(cmc ~  wp*spcode, data = filter(final_data, year == 2024))
+wp_cmc_model <- lm(cmc ~  wp*spcode, data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
 anova(wp_cmc_model)
 
 summary(wp_cmc_model)
 
 
-AIC(wp_lfmc_model, wp_cmc_model) # water potential is more tightly linked to moisture
+wp_cmc_ldmc_model <- lm(cmc ~  wp*spcode*ldmc, data = filter(final_data, year == 2024 & spcode != "JUPIF"))
+
+summary(wp_cmc_ldmc_model)
+
+anova(wp_cmc_ldmc_model)
+
+wp_cmc_lma_model <- lm(cmc ~  wp*spcode*lma, data = filter(final_data, year == 2024 & spcode != "JUPIF"))
+
+summary(wp_cmc_lma_model)
+
+anova(wp_cmc_lma_model)
+
+AIC(wp_lfmc_model, wp_cmc_model, wp_cmc_ldmc_model, wp_cmc_lma_model) # water potential is more tightly linked to moisture
 # content of twig with leaf than just leaf moisture content!
 
 #############################################################################
@@ -51,6 +63,7 @@ species_ignition <- lm(log10(ignition_delay +1) ~ spcode,
 cmc_wp_species_ignition_pre_temp <- lm(log10(ignition_delay +1) ~ cmc*wp*spcode + pre_burning_temp + wind_speed, 
                                    data = filter(final_data, year == 2024 & spcode != "JUPIF"))
 
+anova(cmc_wp_species_ignition_pre_temp)
 
 AIC(cmc_wp_species_ignition,lfmc_wp_species_ignition, wp_species_ignition, lfmc_species_ignition,
     cmc_species_ignition, species_ignition, cmc_wp_species_ignition_pre_temp) # interaction between wp*cmc*spcode
@@ -78,7 +91,13 @@ species_ignition_2324 <- lm(log10(ignition_delay +1) ~ spcode,
 
 
 AIC(cmc_wp_species_ignition_2324, wp_species_ignition_2324,
-    cmc_species_ignition_2324, species_ignition_2324) # Now wp
+    cmc_species_ignition_2324, species_ignition_2324) 
+
+cmc_wp_species_ignition_pre_temp_2324 <- lm(log10(ignition_delay +1) ~ cmc*wp*spcode + pre_burning_temp + wind_speed, 
+                                       data = filter(final_data, spcode != "JUPIF"))
+
+AIC(cmc_wp_species_ignition_2324, wp_species_ignition_2324,
+    cmc_species_ignition_2324, species_ignition_2324, cmc_wp_species_ignition_pre_temp_2324) 
 
 ###########################################################################
 # which one is better in predicting heat release
