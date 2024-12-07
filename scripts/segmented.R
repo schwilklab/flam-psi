@@ -13,145 +13,274 @@ library(segmented)
 # Intially JUPI
 #############################################################################
 
-segmented_jupi_ig <- final_data %>%
-  filter(spcode == "JUPI") %>%
-  filter(self_ignition != 1)
+jupi <- final_data %>%
+  filter(spcode == "JUPI")
+  
+dim(jupi) 
 
-dim(segmented_jupi_ig) 
-
-segmented_jupi_degsec <- filtered_data %>%
-  filter(spcode == "JUPI") %>%
-  filter(self_ignition != 1)
-
-dim(segmented_jupi_degsec)
-
-lm_jupi <- lm(ignition_delay ~ wp, data = segmented_jupi_ig)
+lm_jupi <- lm(ignition_delay ~ wp, data = jupi)
 
 jupi_seg <- segmented::segmented(lm_jupi, seg.Z = ~ wp)
 
 AIC(lm_jupi, jupi_seg) 
 
-summary(jupi_seg) # segmented is better but AIC difference is less than 2 
+summary(jupi_seg) 
+
+### Now fmc
+
+lm_jupi_ig_cmc <- lm(ignition_delay ~ cmc, data = jupi)
+
+jupi_seg_ig_cmc <- segmented::segmented(lm_jupi_ig_cmc, seg.Z = ~ cmc)
+
+AIC(lm_jupi_ig_cmc, jupi_seg_ig_cmc)
+
+lm_jupi_ig_lfmc <- lm(ignition_delay ~ lfmc, data = jupi)
+
+jupi_seg_ig_lfmc <- segmented::segmented(lm_jupi_ig_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_jupi_ig_lfmc, jupi_seg_ig_lfmc)
+
+####################################################################################
+# Now the wp vs heat release
+###################################################################################
+
+lm_heat_release_jupi <- lm(heat_release_j ~ wp, data = jupi)
+
+jupi_heat_release_segmented <- segmented::segmented(lm_heat_release_jupi, seg.Z = ~ wp)
+
+AIC(lm_heat_release_jupi, jupi_heat_release_segmented) 
+
+# Now FMC
+
+lm_heat_release_jupi_cmc <- lm(heat_release_j ~ cmc, data = jupi)
+
+jupi_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_jupi_cmc, seg.Z = ~ cmc)
+
+AIC(lm_heat_release_jupi_cmc, jupi_heat_release_segmented_cmc) 
+
+lm_heat_release_jupi_lfmc <- lm(heat_release_j ~ lfmc, data = jupi)
+
+jupi_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_jupi_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_heat_release_jupi_lfmc, jupi_heat_release_segmented_lfmc) 
+
+###################################################################################
+# JUAS
+###################################################################################
+
+juas <- final_data %>%
+  filter(spcode == "JUAS")
+
+dim(juas) 
+
+lm_juas <- lm(ignition_delay ~ wp, data = juas)
+
+juas_seg <- segmented::segmented(lm_juas, seg.Z = ~ wp)
+
+AIC(lm_juas, juas_seg) 
 
 ### Now FMC
 
-lm_jupi_ig_fmc <- lm(ignition_delay ~ fmc, data = segmented_jupi_ig)
+lm_juas_ig_cmc <- lm(ignition_delay ~ cmc, data = juas)
 
-jupi_seg_ig_fmc <- segmented::segmented(lm_jupi_ig_fmc, seg.Z = ~ fmc)
+juas_seg_ig_cmc <- segmented::segmented(lm_juas_ig_cmc, seg.Z = ~ cmc)
 
-AIC(lm_jupi_ig_fmc, jupi_seg_ig_fmc) # Linear is better but  AIC difference is less than 2
+AIC(lm_juas_ig_cmc, juas_seg_ig_cmc)
+
+lm_juas_ig_lfmc <- lm(ignition_delay ~ lfmc, data = juas)
+
+juas_seg_ig_lfmc <- segmented::segmented(lm_juas_ig_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_juas_ig_lfmc, juas_seg_ig_lfmc)
 
 ####################################################################################
-# Now the wp vs temperature integration for Juniperus
+# Now the wp vs heat release
 ###################################################################################
 
-lm_degsec_jupi <- lm(degsec_100 ~ wp, data = segmented_jupi_degsec)
+lm_heat_release_juas <- lm(heat_release_j ~ wp, data = juas)
 
-jupi_degsec_segmented <- segmented::segmented(lm_degsec_jupi, seg.Z = ~ wp)
+juas_heat_release_segmented <- segmented::segmented(lm_heat_release_juas, seg.Z = ~ wp)
 
-AIC(lm_degsec_jupi, jupi_degsec_segmented) # lm is better than segmented
+AIC(lm_heat_release_juas, juas_heat_release_segmented) 
 
 # Now FMC
 
-lm_degsec_jupi_fmc <- lm(degsec_100 ~ fmc, data = segmented_jupi_degsec)
+lm_heat_release_juas_cmc <- lm(heat_release_j ~ cmc, data = juas)
 
-jupi_degsec_segmented_fmc <- segmented::segmented(lm_degsec_jupi_fmc, seg.Z = ~ fmc)
+juas_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_juas_cmc, seg.Z = ~ cmc)
 
-AIC(lm_degsec_jupi_fmc, jupi_degsec_segmented_fmc) # segmented is better but AIC difference is less than 2 
+AIC(lm_heat_release_juas_cmc, juas_heat_release_segmented_cmc) 
+
+lm_heat_release_juas_lfmc <- lm(heat_release_j ~ lfmc, data = juas)
+
+juas_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_juas_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_heat_release_juas_lfmc, juas_heat_release_segmented_lfmc) 
+
+####################################################################################
+# RHVI3
+###################################################################################
+
+rhvi3 <- final_data %>%
+  filter(spcode == "RHVI3")
+
+dim(rhvi3) 
+
+lm_rhvi3 <- lm(ignition_delay ~ wp, data = rhvi3)
+
+rhvi3_seg <- segmented::segmented(lm_rhvi3, seg.Z = ~ wp)
+
+AIC(lm_rhvi3, rhvi3_seg) 
+
+summary(rhvi3_seg) 
+
+### Now cmc
+
+lm_rhvi3_ig_cmc <- lm(ignition_delay ~ cmc, data = rhvi3)
+
+rhvi3_seg_ig_cmc <- segmented::segmented(lm_rhvi3_ig_cmc, seg.Z = ~ cmc)
+
+AIC(lm_rhvi3_ig_cmc, rhvi3_seg_ig_cmc)
+
+lm_rhvi3_ig_lfmc <- lm(ignition_delay ~ lfmc, data = rhvi3)
+
+rhvi3_seg_ig_lfmc <- segmented::segmented(lm_rhvi3_ig_cmc, seg.Z = ~ lfmc)
+
+AIC(lm_rhvi3_ig_lfmc, rhvi3_seg_ig_lfmc)
+
+
+####################################################################################
+# Now the wp vs heat release
+###################################################################################
+
+lm_heat_release_rhvi3 <- lm(heat_release_j ~ wp, data = rhvi3)
+
+rhvi3_heat_release_segmented <- segmented::segmented(lm_heat_release_rhvi3, seg.Z = ~ wp)
+
+AIC(lm_heat_release_rhvi3, rhvi3_heat_release_segmented) 
+
+# Now FMC
+
+lm_heat_release_rhvi3_cmc <- lm(heat_release_j ~ cmc, data = rhvi3)
+
+rhvi3_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_rhvi3_cmc, seg.Z = ~ cmc)
+
+AIC(lm_heat_release_rhvi3_cmc, rhvi3_heat_release_segmented_cmc) 
+
+lm_heat_release_rhvi3_lfmc <- lm(heat_release_j ~ lfmc, data = rhvi3)
+
+rhvi3_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_rhvi3_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_heat_release_rhvi3_lfmc, rhvi3_heat_release_segmented_lfmc) 
+
+
+####################################################################################
+# SOSE3
+###################################################################################
+
+sose3 <- final_data %>%
+  filter(spcode == "SOSE3")
+
+dim(sose3) 
+
+lm_sose3 <- lm(ignition_delay ~ wp, data = sose3)
+
+sose3_seg <- segmented::segmented(lm_sose3, seg.Z = ~ wp)
+
+AIC(lm_sose3, sose3_seg) 
+
+summary(sose3_seg) 
+
+### Now cmc
+
+lm_sose3_ig_cmc <- lm(ignition_delay ~ cmc, data = sose3)
+
+sose3_seg_ig_cmc <- segmented::segmented(lm_sose3_ig_cmc, seg.Z = ~ cmc)
+
+AIC(lm_sose3_ig_cmc, sose3_seg_ig_cmc)
+
+lm_sose3_ig_lfmc <- lm(ignition_delay ~ lfmc, data = sose3)
+
+sose3_seg_ig_lfmc <- segmented::segmented(lm_sose3_ig_cmc, seg.Z = ~ lfmc)
+
+AIC(lm_sose3_ig_lfmc, sose3_seg_ig_lfmc)
+
+####################################################################################
+# Now the wp vs heat release
+###################################################################################
+
+lm_heat_release_sose3 <- lm(heat_release_j ~ wp, data = sose3)
+
+sose3_heat_release_segmented <- segmented::segmented(lm_heat_release_sose3, seg.Z = ~ wp)
+
+AIC(lm_heat_release_sose3, sose3_heat_release_segmented) 
+
+# Now FMC
+
+lm_heat_release_sose3_cmc <- lm(heat_release_j ~ cmc, data = sose3)
+
+sose3_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_sose3_cmc, seg.Z = ~ cmc)
+
+AIC(lm_heat_release_sose3_cmc, sose3_heat_release_segmented_cmc) 
+
+lm_heat_release_sose3_lfmc <- lm(heat_release_j ~ lfmc, data = sose3)
+
+sose3_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_sose3_lfmc, seg.Z = ~ lfmc)
+
+AIC(lm_heat_release_sose3_lfmc, sose3_heat_release_segmented_lfmc) 
+
+####################################################################################
+# MATR3, only for heat release since its not sensitive on its ignition delay
+###################################################################################
+
+matr3 <- final_data %>%
+  filter(spcode == "MATR3")
+
+lm_heat_release_matr3 <- lm(heat_release_j ~ wp, data = matr3)
+
+matr3_heat_release_segmented <- segmented::segmented(lm_heat_release_matr3, seg.Z = ~ wp)
+
+AIC(lm_heat_release_matr3, matr3_heat_release_segmented) 
+
+# Now FMC
+
+lm_heat_release_matr3_cmc <- lm(heat_release_j ~ cmc, data = matr3)
+
+matr3_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_matr3_cmc, seg.Z = ~ cmc)
+
+AIC(lm_heat_release_matr3_cmc, matr3_heat_release_segmented_cmc) 
+
+lm_heat_release_matr3_lfmc <- lm(heat_release_j ~ lfmc, data = matr3)
+
+matr3_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_matr3_cmc, seg.Z = ~ lfmc)
+
+AIC(lm_heat_release_matr3_lfmc, matr3_heat_release_segmented_lfmc) 
 
 ###################################################################################
-# Prosopis glandulosa, initially ignition delay
+# PRGL2
 ###################################################################################
-
-segmented_prgl2_ig <- final_data %>%
+prgl2 <- final_data %>%
   filter(spcode == "PRGL2")
 
-dim(segmented_prgl2_ig) # 35
+lm_heat_release_prgl2 <- lm(heat_release_j ~ wp, data = prgl2)
 
-lm_prgl2 <- lm(ignition_delay ~ wp, data = segmented_prgl2_ig)
+prgl2_heat_release_segmented <- segmented::segmented(lm_heat_release_prgl2, seg.Z = ~ wp)
 
-prgl2_seg <- segmented::segmented(lm_prgl2, seg.Z = ~ wp)
-
-summary(prgl2_seg)
-
-AIC(lm_prgl2, prgl2_seg) # segmented is better
-
+AIC(lm_heat_release_prgl2, prgl2_heat_release_segmented) 
 
 # Now FMC
 
-lm_prgl2_fmc_ig <- lm(ignition_delay ~ fmc, data = segmented_prgl2_ig)
+lm_heat_release_prgl2_cmc <- lm(heat_release_j ~ cmc, data = prgl2)
 
-prgl2_seg_ig_fmc <- segmented::segmented(lm_prgl2_fmc_ig, seg.Z = ~ fmc)
+prgl2_heat_release_segmented_cmc <- segmented::segmented(lm_heat_release_prgl2_cmc, seg.Z = ~ cmc)
 
-summary(prgl2_seg_ig_fmc)
+AIC(lm_heat_release_prgl2_cmc, prgl2_heat_release_segmented_cmc) 
 
-AIC(lm_prgl2_fmc_ig, prgl2_seg_ig_fmc) # segmented is better
+lm_heat_release_prgl2_lfmc <- lm(heat_release_j ~ lfmc, data = prgl2)
 
-####################################################################################
-# Now the wp vs temerature integration for Prosopis glandulosa
-###################################################################################
+prgl2_heat_release_segmented_lfmc <- segmented::segmented(lm_heat_release_prgl2_lfmc, seg.Z = ~ lfmc)
 
-lm_degsec_prgl2_wp <- lm(degsec_100 ~ wp, data = segmented_prgl2_ig) 
+AIC(lm_heat_release_prgl2_lfmc, prgl2_heat_release_segmented_lfmc) 
 
-prgl2_degsec_seg_wp <- segmented::segmented(lm_degsec_prgl2_wp, seg.Z = ~ wp)
-
-AIC(lm_degsec_prgl2_wp, prgl2_degsec_seg_wp) # lm is better
-
-# Now fmc
-
-lm_degsec_prgl2_fmc <- lm(degsec_100 ~ fmc, data = segmented_prgl2_ig) 
-
-prgl2_degsec_seg_fmc <- segmented::segmented(lm_degsec_prgl2_fmc, seg.Z = ~ fmc)
-
-summary(prgl2_degsec_seg_fmc)
-
-AIC(lm_degsec_prgl2_fmc, prgl2_degsec_seg_fmc) # segmeneted is Better
-
-
-###########################################################################
-# Rhus trilobata, initially ignition delay
-###########################################################################
-
-segmented_rhtr_ig <- final_data %>%
-  filter(spcode == "RHTR")
- 
-
-dim(segmented_rhtr_ig)
-
-lm_ig_rhtr <- lm(ignition_delay ~ wp, data = segmented_rhtr_ig)
-
-rhtr_ig_seg <- segmented::segmented(lm_ig_rhtr, seg.Z = ~ wp)
-
-AIC(lm_ig_rhtr, rhtr_ig_seg) # lm is better than but AIC difference is not more than or equal to 2
-
-# Now FMC
-
-lm_ig_rhtr_fmc <- lm(ignition_delay ~ fmc, data = segmented_rhtr_ig)
-
-rhtr_ig_seg_fmc <- segmented::segmented(lm_ig_rhtr_fmc, seg.Z = ~ fmc)
-
-AIC(lm_ig_rhtr_fmc, rhtr_ig_seg_fmc) # Linear model is better
-
-
-####################################################################################
-# Now the wp vs temerature integration for Rhus trilobata
-###################################################################################
-
-lm_degsec_rhtr_wp <- lm(degsec_100 ~ wp, data = segmented_rhtr_ig)
-
-rhtr_degsec_seg_wp <- segmented::segmented(lm_degsec_rhtr_wp, seg.Z = ~ wp)
-
-AIC(lm_degsec_rhtr_wp, rhtr_degsec_seg_wp) 
-
-# Now FMC
-
-lm_degsec_rhtr_fmc <- lm(degsec_100 ~ fmc, data = segmented_rhtr_ig)
-
-rhtr_degsec_seg_fmc <- segmented::segmented(lm_degsec_rhtr_fmc, seg.Z = ~ fmc)
-
-
-summary(rhtr_degsec_seg_fmc)
-
-AIC(lm_degsec_rhtr_fmc, rhtr_degsec_seg_fmc) 
 
 

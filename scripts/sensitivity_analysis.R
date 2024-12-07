@@ -20,6 +20,7 @@ ajb_heat_release_data <- final_data %>%
 dim(ajb_heat_release_data)
 
 ajb_ignition_delay_data <- final_data %>%
+  filter(year == 2024) %>%
   filter(spcode != "JUPIF")
 
 dim(ajb_ignition_delay_data)
@@ -111,33 +112,7 @@ species_wp_ign_sensitivity <- ajb_ignition_delay_data %>%
 
 species_wp_ign_sensitivity
 
-#####################################################################################################
-# canopy moisture content vs ignition_delay
-####################################################################################################
 
-species_cmc_ign_sensitivity <- ajb_ignition_delay_data %>%
-  nest(data = c(-spcode, -display_name)) %>%
-  mutate(fit = map(data, ~ lm(ignition_delay ~ cmc, data = .x)),
-         tidied = map(fit, tidy)) %>%
-  unnest(tidied) %>%
-  filter(term == "cmc") %>%
-  dplyr::select(spcode, display_name, cmc_ign_sens = estimate)
-
-species_cmc_ign_sensitivity
-
-####################################################################################################
-# Now heat release, initially wp vs heat release
-####################################################################################################
-
-species_wp_heat_release_sensitivity <- ajb_heat_release_data %>%
-  nest(data = c(-spcode, -display_name)) %>%
-  mutate(fit = map(data, ~ lm(heat_release_j ~ wp, data = .x)),
-         tidied = map(fit, tidy)) %>%
-  unnest(tidied) %>%
-  filter(term == "wp") %>%
-  dplyr::select(spcode, display_name, wp_heat_rlease_sens = estimate)
-
-species_wp_heat_release_sensitivity 
 
 ####################################################################################################
 # cmc vs heat release
@@ -157,10 +132,8 @@ species_cmc_heat_release_sensitivity
 # Now combining these four
 ######################################################################################################
 
-species_ig_heat_release_sum <- left_join(species_wp_ign_sensitivity, species_cmc_ign_sensitivity, 
-                                         by = c("spcode", "display_name")) %>%
-  left_join(species_wp_heat_release_sensitivity,  by = c("spcode", "display_name")) %>%
-  left_join(species_cmc_heat_release_sensitivity, by = c("spcode", "display_name"))
+species_ig_heat_release_sum <- left_join(species_wp_ign_sensitivity, 
+  species_cmc_heat_release_sensitivity, by = c("spcode", "display_name"))
            
 species_ig_heat_release_sum
 
@@ -189,36 +162,9 @@ summary(pv_wp_ig_mod)
 anova(pv_wp_ig_mod)
 
 
-leaf_cmc_ig_mod <- lm(cmc_ign_sens ~ lma + ldmc + leaf_area + leaf_area_per_leaflet, data = species_sum)
-
-summary(leaf_cmc_ig_mod)
-
-anova(leaf_cmc_ig_mod)
-
-pv_cmc_ig_mod <- lm(cmc_ign_sens ~ tlp + rwc_tlp + capacitance_above_tlp + capacitance_below_tlp +
-                     modulus_elasticity + swc + osmotic_potential, data = species_sum)
-
-summary(pv_cmc_ig_mod)
-
-anova(pv_cmc_ig_mod)
-
 ##############################################################################################################
 # Now heat release
 #############################################################################################################
-
-leaf_wp_heat_release_mod <- lm(wp_heat_rlease_sens ~ lma + ldmc + leaf_area + leaf_area_per_leaflet, data = species_sum)
-
-summary(leaf_wp_heat_release_mod)
-
-anova(leaf_wp_heat_release_mod)
-
-pv_wp_heat_release_mod <- lm(wp_heat_rlease_sens ~ tlp + rwc_tlp + capacitance_above_tlp + capacitance_below_tlp +
-                                 modulus_elasticity + swc + osmotic_potential, data = species_sum)
-
-summary(pv_wp_heat_release_mod)
-
-anova(pv_wp_heat_release_mod)
-
 
 
 leaf_cmc_heat_release_mod <- lm(cmc_heat_rlease_sens ~ lma + ldmc + leaf_area + leaf_area_per_leaflet, data = species_sum)
@@ -262,19 +208,6 @@ summary(wp_ig_shoot_capacitance)
 
 anova(wp_ig_shoot_capacitance)
 
-
-cmc_ig_shoot_capacitance <- lm(cmc_ign_sens ~ 1/wp_sens, data=species_sum)
-
-summary(cmc_ig_shoot_capacitance)
-
-anova(cmc_ig_shoot_capacitance)
-
-
-wp_heat_release_shoot_capacitance <- lm(wp_heat_rlease_sens ~ 1/wp_sens, data = species_sum)
-
-summary(wp_heat_release_shoot_capacitance)
-
-anova(wp_heat_release_shoot_capacitance)
 
 
 cmc_heat_release_shoot_capacitance <- lm(cmc_heat_rlease_sens ~ 1/wp_sens, data=species_sum)

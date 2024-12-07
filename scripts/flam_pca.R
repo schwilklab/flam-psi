@@ -9,9 +9,9 @@
 # (more mass to lose)_
 ###############################################################################
 
-alldata <- left_join(alldata, hobos_wider)
+alldata_2024 <- left_join(alldata_2024, hobos_wider)
 
-pca_data <- alldata %>%
+pca_data <- alldata_2024 %>%
   dplyr::select(sample_id, heat_release_j, ##, massloss,
          vol_burned, flame_height, flame_duration, dur_100,
          peak_temp, degsec_100, ignition_delay) %>%
@@ -30,7 +30,7 @@ flam_loadings <- flam_pca$rotation[ ,1:2]
 
 flam_loadings
 
-biplot(flam_pca)
+#biplot(flam_pca)
 
 
 ###############################################################################
@@ -46,7 +46,7 @@ pca_data <- pca_data %>%
   dplyr::select(sample_id, PC1, PC2)
 
 
-final_data <- left_join(alldata, pca_data) %>%
+final_data <- left_join(alldata_2024, pca_data) %>%
   filter(sample_id %in% pca_data$sample_id)
 
 dim(final_data) # 355

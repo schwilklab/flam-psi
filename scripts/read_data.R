@@ -1,5 +1,5 @@
 # read-data.R
-# Dylan Schwilk 2023
+# Dylan Schwilk
 
 library(readr)
 library(dplyr)
@@ -149,6 +149,8 @@ time_wp <- time_wp %>%
   left_join(species, by = "spcode") %>%
   dplyr::select(-scientific_name)
 
+time_wp <- time_wp[-c(242:247),]
+
 pv_summary <- pv_summary %>%
   dplyr::select(-saturated_moisture_content) %>%
   mutate(swc = 100*swc,
@@ -183,6 +185,13 @@ alldata <- samples %>% full_join(wp_fmc) %>%
   mutate(wp = ifelse(spcode == "PRGL2" & wp == -7, -8.24, wp)) 
   
 dim(alldata) # 356
+
+alldata_2024 <- alldata %>%
+  filter(sample_id != "FT17") %>%
+  filter(sample_id != "FT15") %>%
+  filter(sample_id != "SXT19") %>%
+  filter(year == 2024 & spcode != "JUPIF") %>%
+  filter(wp != -8.24) # leaving out the mesquite samples which didn't rehydrate
 
 ######################################################################################
 ## Cleaning up work space, only keeping the alldata, pv_summary and time_wp

@@ -8,22 +8,22 @@ library(ggplot2)
 library(gridExtra)
 library(scales)
 library(extrafont)
-#font_import(pattern="Arial")  # call once. Provides 
+font_import(pattern = "Helvetica")  # call once. Provides 
 loadfonts()
 
 # constants and theme for publications
 #schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")
 #EC4E15
 #362908
-schwilkcolors <- c("#4A4C4F", "#403F2D", "#AF5F42", "#8F7955", "#EC4E15",
-                   "#EE722E", "#D68D18", "#A9B678", "#E3C477")
+schwilkcolors <- c("#EC4E15", "#EE722E", "#D68D18", "#AF5F42", "#E3C477", "#A9B678", "#8F7955", "#4A4C4F", "#2C2A1D")
 
-textsize <- 12
+
+textsize <- 10
 smsize <- textsize-2
 axissz <- smsize
 pt2mm <- 0.35146
 smsize.mm <- smsize*pt2mm
-fontfamily = "ArialMT"
+fontfamily = "Helvetica"
 col2 <- 16 # cm  -- adjust for journal specfic column sizes.
 col1 <- 8.0 # cm -- make sure to indicate units when using ggsave!
 beamer_height <- 7 #cm
@@ -32,7 +32,7 @@ ppi <- 300 # for raster formats
 ## Some specific geoms to add
 
 dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
-bestfit <- geom_smooth(method="lm",se = FALSE, size = 1.5)
+bestfit <- geom_smooth(method="lm", se = FALSE, size = 1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun.y=fun, geom=geom, size = 3, ...)
