@@ -8,6 +8,10 @@ library(stringr)
 library(lubridate)
 
 ###############################################################################
+# Reading and cleaning the datasets
+###############################################################################
+
+###############################################################################
 # Constants
 ###############################################################################
 
@@ -42,6 +46,8 @@ juniperus_leaf_traits <- read_csv("./data/combined/juniperus_lma.csv")
 time_wp <- read_csv("./data/2024/time_wp.csv")
 
 pv_summary <- read_csv("./data/2024/pv_curve_summary.csv")
+
+drydown <- read_csv("./data/2023/shrub_drydown_test.csv")
 
 ###############################################################################
 ## Cleaning the data
@@ -155,6 +161,17 @@ pv_summary <- pv_summary %>%
   dplyr::select(-saturated_moisture_content) %>%
   mutate(swc = 100*swc,
          swc = round(swc, 2))
+
+############################################################################
+# Preliminary drydown from 2023
+###########################################################################
+
+drydown_long <- drydown %>% select(-note) %>%
+  pivot_longer(cols=starts_with("hr_"), names_to="time",
+               values_to="water_potential",
+               names_pattern="hr_([0-9\\.]+)") %>%
+  mutate(time = as.numeric(time), water_potential = -1*water_potential) %>%
+  filter(species != "Ziziphus obtusifolia")
 
 ############################################################################
 ## Combining them all

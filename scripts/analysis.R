@@ -9,7 +9,7 @@ library(forcats)
 library(lsmeans)
 
 ################################################################################
-# Initially water potential and leaf fuel moisture and canopy fuel moisture relationship
+# Initially water potential and fuel moisture relationship
 ################################################################################
 
 dim(final_data)
@@ -34,7 +34,7 @@ anova(wp_cmc_ldmc_model)
 
 #############################################################################
 # Which one between water potential and fmc is better in predicting 
-# shoot flammability, initially ignitibility?
+# shoot flammability, initially ignitibility.
 #########################################################################
 
 wp_species_ignition <- lm(ignition_delay ~ wp*spcode + pre_burning_temp + wind_speed, 
@@ -107,7 +107,6 @@ pv_sum <- pv_summary %>%
          swc = round(swc, 2),
          osmotic_potential = round(osmotic_potential, 2))
 pv_sum
-
 
 #######################################################################################
 # Combining these three
@@ -193,10 +192,8 @@ dry_down_sensitivity <- time_wp %>%
   filter(term == "hours") %>%
   select(spcode, display_name, dry_down_rate = estimate)
 
-
 species_sum <- left_join(species_sum, dry_down_sensitivity) %>%
   mutate(dry_down_rate = round(dry_down_rate, 3))
-
 
 ######################################################################################################
 # Correlation among leaf and hydraulic traits
@@ -205,7 +202,9 @@ species_sum <- left_join(species_sum, dry_down_sensitivity) %>%
 cor_data <- species_sum[, -c(1:2)] %>%
   rename(lfmc_loss_rate = dry_down_rate) %>%
   mutate(lfmc_loss_rate = -1*(lfmc_loss_rate)) %>%
-  dplyr::select( -wp_ign_sens, -cmc_heat_rlease_sens)
+  rename(ignitibility_sense = wp_ign_sens) %>%
+  rename(heat_release_sense = cmc_heat_rlease_sens) %>%
+  rename(leaf_capacitance = capacitance_above_tlp)
 
 traits_cor <- cor(cor_data, method = "kendall",
                                 use = "pairwise")
@@ -243,7 +242,7 @@ summary(dry_down_heat)
 anova(dry_down_heat)
 
 ############################################################################################################
-# Now the models, does leaf traits and pv measurements predict ignition sensitivity
+# Now the models, does leaf traits and pv measurements predict flammability sensitivity?
 #########################################################################################################
 
 swc_ig <- lm(wp_ign_sens ~ swc, data = species_sum)
@@ -252,7 +251,7 @@ summary(swc_ig)
 
 anova(swc_ig)
 
-leaf_capacitance_ig_mod <- lm(wp_ign_sens ~ capacitance_below_tlp, data = species_sum)
+leaf_capacitance_ig_mod <- lm(wp_ign_sens ~ capacitance_above_tlp, data = species_sum)
 
 summary(leaf_capacitance_ig_mod)
 
@@ -264,7 +263,7 @@ summary(swc_heat)
 
 anova(swc_heat)
 
-leaf_capacitance_heat_release_mod <- lm(cmc_heat_rlease_sens ~ capacitance_below_tlp, data = species_sum)
+leaf_capacitance_heat_release_mod <- lm(cmc_heat_rlease_sens ~ capacitance_above_tlp, data = species_sum)
 
 summary(leaf_capacitance_heat_release_mod)
 

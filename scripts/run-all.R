@@ -3,7 +3,7 @@
 # run-all.R
 # Shrub Flammability project
 # Dylan Schwilk, Azaj Mahmud
-# February 2023
+
 
 # This steering script sources all of the non stand-lone code below to read in
 # data, conduct PCAs, fit models, build tables and figures.
@@ -33,9 +33,8 @@ hobos_wider <- readRDS(file.path(DATA_CACHE_DIR, "hobos_wider.RDS"))
 
 source("./scripts/flam_pca.R")
 
-# flam_pca creates one main data file used later: final_data 
+# flam_pca creates one main data file for only 2024 for analysis: final_data 
 
-source("./scripts/analysis.R") 
-source("./scripts/figures.R")
-#source("./scripts/segmented.R") 
-#source("./scripts/hobo_bench_drying.R") 
+source("./scripts/analysis.R") # Analysis
+source("./scripts/figures.R") # For figures
+

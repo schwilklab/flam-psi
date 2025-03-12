@@ -1,10 +1,11 @@
 #!/usr/bin/Rscript --vanilla
 
+##########################################################################
 # Adapted from shrubflam repo (Shrub Flammability project) Dylan Schwilk, Azaj
 # Mahmud 2022
-
 # Read the thermocouple data, in multiple csv files saved from the HOBO
 # software.
+##########################################################################
 
 TZ = "CST6CDT"
 DATA_CACHE_DIR <- "./results"
@@ -35,7 +36,6 @@ burn_trials_2024 <- burn_trials_2024 %>%
          hobo_end_time = hobo_start_time + dseconds(flame_duration),
          interval = lubridate::interval(hobo_start_time, hobo_end_time))
 
-
 ####################################################################
 # Function for reading a single hobo csv file
 ####################################################################
@@ -61,8 +61,6 @@ concat_hobo_files <- function(filelist, label) {
   return(r)
 }
 
-
-
 ###############################################################################
 # We could grab the column name from the file name and do this in one go, but
 # this also works.
@@ -81,8 +79,6 @@ flam_left_2024 <- concat_hobo_files(list.files("./data/2024/burn_hobos",
                                           pattern = "flam.left*.csv"),
                                "flam_left")
 
-
-
 #####################################################################
 # Grabbing all the hobo files from mid
 #####################################################################
@@ -96,7 +92,6 @@ flam_mid_2024 <- concat_hobo_files(list.files("./data/2024/burn_hobos",
                                          full.names = TRUE, recursive = TRUE,
                                          pattern = "flam.mid*.csv"),
                               "flam_mid")
-
 
 #####################################################################
 # Grabbing all the hobo files from right
@@ -125,7 +120,6 @@ hobos_2024 <- full_join(flam_left_2024, flam_mid_2024, by = "time") %>%
   full_join(flam_right_2024,  by = "time")
 
 
-
 #####################################################################
 # Function to assign the labels after matching the trails time hobos
 #####################################################################
@@ -136,7 +130,6 @@ get_trial_label <- function(time, burn_trials_data) {
   # Return the sample_id corresponding to the match
   return(burn_trials_data$sample_id[which.max(matches)])
 }
-
 
 #####################################################################
 # Assigning the labels
@@ -174,16 +167,15 @@ hobo_temp_sum <- hobos_long %>%  filter(sample_id != "NA") %>%
             peak_time = time[which(peak_temp == temperature)[1]],
             num_NA = sum(is.na(temperature))) %>% ungroup()
  
-
 dim(burn_trials) 
 dim(hobo_temp_sum) 
-
 
 ###############################################################################
 # Need to make the summarise data wider in order to merge with the other trial
 # data to perform the PCA. Code below makes decision to just take averagevalues
 # across three positions per trial. Reconsider this.
 ###############################################################################
+
 hobos_wider <- hobo_temp_sum %>%
   group_by(sample_id) %>%
   summarise(dur_100 = mean(dur_100),
