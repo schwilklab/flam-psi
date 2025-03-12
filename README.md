@@ -1,6 +1,6 @@
 # Moisture loss rate drives the species-specific sensitivity of shoot flammability to water status
 
-American Journal of Botany, accepted 20205
+American Journal of Botany, accepted 2025,
 Authors: Azaj Mahmud, Nursema Aktepe, Dylan W Schwilk
 
 ## Data and source code
