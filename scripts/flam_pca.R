@@ -5,7 +5,7 @@
 
 ###############################################################################
 # AM: Merging the hobos and alldata2024 
-# PCA analysis. Don;t use massloss because it is covaries too strongly with wp
+# PCA analysis. Don't use massloss because it is covaries too strongly with wp
 # (more mass to lose)
 ###############################################################################
 
