@@ -9,7 +9,7 @@
 # (more mass to lose)
 ###############################################################################
 
-alldata_2024 <- left_join(alldata_2024, hobos_wider)
+alldata_2024 <- dplyr::left_join(alldata_2024, hobos_wider)
 
 pca_data <- alldata_2024 %>%
   dplyr::select(sample_id, heat_release_j, ##, massloss,
