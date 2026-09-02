@@ -1,4 +1,4 @@
-## ggplot_theme.R
+## ggplot_themes.R
 ##
 ## Theme options for graphs to be sourced in. Provides four themes, two for
 ## publications and two for presentations. Math for font sizes might need to be
@@ -23,6 +23,7 @@ library(ggplot2)
 library(gridExtra)
 library(scales)
 library(extrafont)
+
 #font_import(pattern="Arial") # call once for local installation. Provides
 #loadfonts() function
 loadfonts()
@@ -35,6 +36,9 @@ schwilkcolors_extended <- c(schwilkcolors, lighter_colors)
 
 # schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#437683", "#18B0D6")
 # schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")  # ?
+pujacolors <- c("#7F0000", "#A50F15", "#CB181D", "#E03424", "#EC4E15", "#EE722E", "#D68D18",
+                   "#E3C477", "#A9B678", "#8F7955", "#6B6254", "#4A4C4F")
+
 
 ## The ggplot theme for all figures.
 bestfit <- geom_smooth(method="lm",se = FALSE, color = "black", linewidth=1.5)
@@ -43,6 +47,15 @@ smsize <- textsize-2
 pt2mm <- 0.35146
 smsize.mm <- smsize*pt2mm
 fontfamily <- "Arial"
+
+col2 <- 16 # cm  -- adjust for journal specfic column sizes.
+col1 <- 8.0 # cm -- make sure to indicate units when using ggsave!
+ppi <- 300 # for raster formats
+
+## Some specific geoms to add
+
+dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
+bestfit <- geom_smooth(method="lm", se = FALSE, size = 1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun.y=fun, geom=geom, size = 3, ...)
@@ -84,6 +97,7 @@ pubtheme.nogridlines <- pubtheme +
 prestxsz <- 12
 pressmsz <- 10
 axissz <- 8
+
 prestheme   <- pubtheme +
   theme(axis.title.y = element_text(size = prestxsz),
         axis.title.x = element_text(size = prestxsz),
@@ -99,5 +113,4 @@ prestheme.nogridlines <- prestheme +
     theme(panel.grid.minor = element_blank(),
           panel.grid.major = element_blank(),
           strip.background = element_blank())
-
 
