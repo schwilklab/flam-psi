@@ -8,7 +8,7 @@
 # This steering script sources all of the non stand-lone code below to read in
 # data, conduct PCAs, fit models, build tables and figures.
 
-source("./scripts/ggplot_theme.R")
+source("./scripts/ggplot_themes.R")
 
 
 #############################################################################
