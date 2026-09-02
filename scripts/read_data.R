@@ -6,6 +6,7 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 library(lubridate)
+library(purrr)
 
 ###############################################################################
 # Reading and cleaning the datasets
@@ -48,6 +49,10 @@ time_wp <- read_csv("./data/2024/time_wp.csv")
 pv_summary <- read_csv("./data/2024/pv_curve_summary.csv")
 
 drydown <- read_csv("./data/2023/shrub_drydown_test.csv")
+
+puja_flam <- read_csv("./data/puja/flam_2025_2026.csv")
+
+puja_species <- read_csv("./data/puja/species.csv")
 
 ###############################################################################
 ## Cleaning the data
@@ -209,6 +214,49 @@ alldata_2024 <- alldata %>%
   filter(sample_id != "SXT19") %>%
   filter(year == 2024 & spcode != "JUPIF") %>%
   filter(wp != -8.24) # leaving out the mesquite samples which didn't rehydrate
+
+
+#####################################################################################
+# Puja's flamambility data
+#####################################################################################
+
+puja_flam <- puja_flam %>%
+  mutate(cmc = ((fresh_mass - dry_mass)/dry_mass)*100) %>%
+  mutate(cmc = round(cmc, 2)) %>%
+  mutate(heat1 = (max_temp - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
+         heat2 = (max_temp - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
+         heat_release_j = (heat1 + heat2)/2,) %>% # This is same as ajb_flam_psi and will need to fix in Puja's paper
+  left_join(puja_species)
+
+puja_flam$heat_release_j <- puja_flam$heat_release_j - min(puja_flam$heat_release_j, na.rm=TRUE)
+
+###################################################################################
+# Arranging and summarising data for figures
+###################################################################################
+
+puja_species_wp_cmc <- puja_flam %>%
+  nest(data = c(-spcode, -display_name)) %>%
+  mutate(fit = map(data, ~ lm(cmc ~ wp, data = .x)),
+         tidied = map(fit, tidy)) %>%
+  unnest(tidied) %>%
+  filter(term == "wp") %>%
+  dplyr::select(spcode, display_name, wp_sens = estimate)
+
+#puja_flam <- puja_flam %>%
+  #full_join(puja_species_wp_cmc, by = "spcode")
+
+puja_species_wp_ign_sensitivity <- puja_flam %>%
+  nest(data =  c(-spcode, -display_name)) %>%
+  mutate(fit = map(data, ~ lm(ig_delay ~ wp, data = .x)),
+         tidied = map(fit, tidy)) %>%
+  unnest(tidied) %>%
+  filter(term == "wp") %>%
+  dplyr::select(spcode, display_name, wp_ign_sens = estimate)
+
+#puja_flam <- puja_flam %>%
+  #full_join(puja_species_wp_ign_sensitivity, by = "spcode") %>%
+  #mutate(wp_sens = round(wp_sens, 2),
+         #wp_ign_sens = round(wp_ign_sens, 2))
 
 ######################################################################################
 ## Cleaning up work space, only keeping the alldata, pv_summary and time_wp

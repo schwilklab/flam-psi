@@ -17,6 +17,9 @@ loadfonts()
 #362908
 schwilkcolors <- c("#EC4E15", "#EE722E", "#D68D18", "#AF5F42", "#E3C477", "#A9B678", "#8F7955", "#4A4C4F", "#2C2A1D")
 
+pujacolors <- c("#7F0000", "#A50F15", "#CB181D", "#E03424", "#EC4E15", "#EE722E", "#D68D18",
+                   "#E3C477", "#A9B678", "#8F7955", "#6B6254", "#4A4C4F")
+
 
 textsize <- 10
 smsize <- textsize-2
@@ -31,7 +34,7 @@ ppi <- 300 # for raster formats
 
 ## Some specific geoms to add
 
-dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
+dws_point <-  geom_point(size=3, alpha=0.9, shape=16)
 bestfit <- geom_smooth(method="lm", se = FALSE, size = 1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
@@ -71,8 +74,8 @@ pubtheme.nogridlines <- pubtheme +
 
 # presentation theme. Meant for beamer output with a graph height of 7 cm. New
 # text sizes aimed at screens rather than page:
-prestxsz <- 14
-pressmsz <- 12
+prestxsz <- 24
+pressmsz <- 18
 prestheme   <- pubtheme +
   theme(axis.title.y = element_text(size = prestxsz),
         axis.title.x = element_text(size = prestxsz),

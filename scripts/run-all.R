@@ -1,7 +1,7 @@
 #!/usr/bin/Rscript --vanilla
 
 # run-all.R
-# Shrub Flammability project
+# Flam-psi project
 # Dylan Schwilk, Azaj Mahmud
 
 
@@ -37,4 +37,4 @@ source("./scripts/flam_pca.R")
 
 source("./scripts/analysis.R") # Analysis
 source("./scripts/figures.R") # For figures
-
+source("./scripts/presentation_figures.R") # Only for presentation figures (Plots for both Azaj and Puja's species).
