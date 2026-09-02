@@ -8,7 +8,7 @@ library(ggplot2)
 library(gridExtra)
 library(scales)
 library(extrafont)
-font_import(pattern = "Helvetica")  # call once. Provides 
+# font_import(pattern = "Arial")  # call once. Provides loadfonts ()
 loadfonts()
 
 # constants and theme for publications

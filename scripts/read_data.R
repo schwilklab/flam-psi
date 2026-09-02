@@ -237,7 +237,7 @@ puja_flam$heat_release_j <- puja_flam$heat_release_j - min(puja_flam$heat_releas
 puja_species_wp_cmc <- puja_flam %>%
   nest(data = c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(cmc ~ wp, data = .x)),
-         tidied = map(fit, tidy)) %>%
+         tidied = map(fit, broom::tidy)) %>%
   unnest(tidied) %>%
   filter(term == "wp") %>%
   dplyr::select(spcode, display_name, wp_sens = estimate)
@@ -248,7 +248,7 @@ puja_species_wp_cmc <- puja_flam %>%
 puja_species_wp_ign_sensitivity <- puja_flam %>%
   nest(data =  c(-spcode, -display_name)) %>%
   mutate(fit = map(data, ~ lm(ig_delay ~ wp, data = .x)),
-         tidied = map(fit, tidy)) %>%
+         tidied = map(fit, broom::tidy)) %>%
   unnest(tidied) %>%
   filter(term == "wp") %>%
   dplyr::select(spcode, display_name, wp_ign_sens = estimate)
