@@ -65,8 +65,7 @@ cmc_ig <- ggplot(final_data, aes(cmc, ignition_delay, color = display_name)) +
  # labs(tag = "(b)") +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
   prestheme.nogridlines +
- theme(legend.position = "none",
-       axis.text.y = element_blank(),
+ theme(legend.position = "none", axis.text.y = element_blank(),
        plot.margin = margin(t=8,r=5,b=8,l=0))
 
 combined_cmc_ig <- plot_grid(wp_ig,cmc_ig)

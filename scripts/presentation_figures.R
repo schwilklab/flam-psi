@@ -4,6 +4,7 @@
 
 library(xtable)
 library(patchwork)
+source("scripts/ggplot_themes.R")
 
 # Two dataset, one is final_data which is ajb_flam_psi paper and another
 # dataset named puja_flam. Since there is 21 species, generating the
@@ -13,6 +14,9 @@ library(patchwork)
 ###################################################################################
 # From colorful to black, this is for Azaj's ajb paper's figures
 ###################################################################################
+
+## DWS: I do not understand these comments.
+
 
 species_sorted <- species_sum %>% arrange(wp_sens) %>% dplyr::select(display_name)
 species_sorted <- unname(unlist(as.vector(species_sorted[,1])))
@@ -53,33 +57,43 @@ lfmc_ig_azaj <- ggplot(final_data, aes(cmc, ignition_delay, color = display_name
   xlab("LFMC (%)") +
   ylab("Ignition delay time (s)") +
   scale_y_continuous(limits = yaxis_range_ig) +
+  scale_x_continuous(limits = c(20,160)) +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
-  prestheme +
+  prestheme.nogridlines +
   theme(legend.position = c(0.20, 0.80),
-        legend.text = element_text(face = "italic"),
-        plot.margin = unit(c(4, 12, 4, 12), "pt"),  
-        axis.text = element_text(face = "bold"),
-        axis.title = element_text(face = "bold")) 
+        legend.text = element_text(size = smsize, face = "italic"),
+        plot.margin = margin(t=8,r=0,b=8,l=5))
 
 lfmc_ig_puja <- ggplot(puja_flam, aes(cmc, ig_delay, color = display_name)) +
   dws_point + bestfit +
   xlab("LFMC (%)") +
   ylab("") +
   scale_y_continuous(limits = yaxis_range_ig) +
+  scale_x_continuous(limits = c(20,160)) +
   scale_color_manual(name = "", values = pujacolors_wp_ig) + 
-  prestheme +
-  theme(legend.position = c(0.20, 0.80),
-        legend.text = element_text(face = "italic"),
-        plot.margin = unit(c(4, 4, 4, 4), "pt"),  
-        axis.text = element_text(face = "bold"),
-        axis.title = element_text(face = "bold")) 
-
+  prestheme.nogridlines +
+  theme(legend.position = c(0.20, 0.75),
+        legend.text = element_text(size = smsize, face = "italic"),
+        axis.text.y = element_blank(),
+        plot.margin = margin(t=8,r=5,b=8,l=0))
 
 combined_lfmc_ig_puja_azaj <- lfmc_ig_azaj | lfmc_ig_puja
+#plot_grid(lfmc_ig_azaj, lfmc_ig_puja)
+
+ggsave("./results/presentation_figures/combined_lfmc_ig_puja_azaj.pdf",
+       device = cairo_pdf,
+       plot = combined_lfmc_ig_puja_azaj,
+       width = beamer_width*2, height = beamer_height*1.5, units = "cm")
 
 
-ggsave("./results/presentation_figures/combined_lfmc_ig_puja_azaj.pdf", plot = combined_lfmc_ig_puja_azaj,
-       width = 13.333, height = 7.5, units = "in", dpi = 300)
+## ggsave("./results/presentation_figures/lfmc_ig_nm.pdf",
+##        device = cairo_pdf,
+##        plot = lfmc_ig_puja,
+##        width = beamer_width, height = beamer_height, units = "cm")
+
+
+
+
 
 
 ####################################################################################
@@ -93,31 +107,33 @@ heat_release_azaj <- ggplot(final_data, aes(cmc, heat_release_j/1000, color = di
   xlab("LFMC (%)") +
   ylab("Heat release (kJ)") +
   scale_y_continuous(limits = yaxis_range_heat) +
+   scale_x_continuous(limits = c(20,160)) +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
-  prestheme +
+  prestheme.nogridlines +
   theme(legend.position = c(0.75, 0.80),
-        legend.text = element_text(face = "italic"),
-        plot.margin = unit(c(4, 12, 4, 12), "pt"),  
-        axis.text = element_text(face = "bold"),
-        axis.title = element_text(face = "bold"))
+        legend.text = element_text(size = smsize, face = "italic"),
+        plot.margin = margin(t=8,r=0,b=8,l=5))
 
 heat_release_puja <- ggplot(puja_flam, aes(cmc, heat_release_j/1000, color = display_name)) +
   dws_point + bestfit +
   xlab("LFMC (%)") +
   ylab("") +
   scale_y_continuous(limits = yaxis_range_heat) +
+   scale_x_continuous(limits = c(20,160)) +
   scale_color_manual(name = "", values =  pujacolors_wp_ig) + 
-  prestheme +
+  prestheme.nogridlines +
   theme(legend.position = c(0.75, 0.80),
-        legend.text = element_text(face = "italic"),
-        plot.margin = unit(c(4, 4, 4, 4), "pt"),  
-        axis.text = element_text(face = "bold"),
-        axis.title = element_text(face = "bold"))
+        legend.text = element_text(size = smsize, face = "italic"),
+        axis.text.y = element_blank(),
+        plot.margin = margin(t=8,r=5,b=8,l=0))
 
 combined_heat_puja_azaj <- heat_release_azaj | heat_release_puja
 
-ggsave("./results/presentation_figures/combined_heat_puja_azaj.pdf", plot = combined_heat_puja_azaj,
-       width = 13.333, height = 7.5, units = "in", dpi = 300)
+ggsave("./results/presentation_figures/combined_heat_puja_azaj.pdf",
+       device = cairo_pdf,
+       plot = combined_heat_puja_azaj,
+       width = beamer_width*2, height = beamer_height*1.5, units = "cm")
+
 
 
 ##########################################################################################

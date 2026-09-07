@@ -1,5 +1,5 @@
 # read-data.R
-# Dylan Schwilk
+# Dylan Schwilk, Azaj Mahmud
 
 library(readr)
 library(dplyr)
@@ -205,7 +205,10 @@ alldata <- samples %>% full_join(wp_fmc) %>%
   mutate(wp = ifelse(spcode == "DITE3" & wp == -7, -7.83, wp)) %>%
   mutate(wp = ifelse(spcode == "MATR3" & wp == -7, -8.06, wp)) %>%
   mutate(wp = ifelse(spcode == "PRGL2" & wp == -7, -8.24, wp)) 
-  
+
+## DWS: What is this data changing above? This looks suspicious. Fix the data,
+## don;t have so many special cases in code.
+
 dim(alldata) # 356
 
 alldata_2024 <- alldata %>%
@@ -214,6 +217,9 @@ alldata_2024 <- alldata %>%
   filter(sample_id != "SXT19") %>%
   filter(year == 2024 & spcode != "JUPIF") %>%
   filter(wp != -8.24) # leaving out the mesquite samples which didn't rehydrate
+
+## DWS: Some of this filtering could be stored as data as per my discussion
+## with Puja.
 
 
 #####################################################################################

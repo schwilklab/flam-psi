@@ -4,7 +4,6 @@
 
 library(xtable)
 library(patchwork)
-library(cowplot)
 
 ###################################################################################
 # From colorful to black
@@ -20,27 +19,25 @@ schwilkcolors_wp_ig <- schwilkcolors
 names(schwilkcolors_wp_ig) <- species_sorted_wp_ig
 
 ###########################################################################
-# Intially water potential vs fmc plot
+# Intially water potential vs cmc plot
 ##########################################################################
 
-wp_fmc_plot <- ggplot(final_data, aes(wp, cmc, color=display_name)) +
+wp_cmc_plot <- ggplot(final_data, aes(wp, cmc, color=display_name)) +
   geom_smooth(method = "lm", se = FALSE) +
   dws_point +
   xlab("Water potential (MPa)") +
   ylab("LFMC (%)") +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
-  prestheme.nogridlines +
-  theme(legend.text = element_text(face="italic", size=axissz-2),
-  legend.position = c(0.2, 0.8))
+  pubtheme +
+  theme(legend.text = element_text(face="italic"),
+        legend.title = element_text(size = textsize, face = "bold"),
+        legend.position = c(0.25, 0.85),
+        plot.margin = unit(c(4, 4, 4, 4), "pt"),  
+        axis.text = element_text(size = axissz, face = "bold"),
+        axis.title = element_text(size = textsize, face = "bold"))
 
-wp_fmc_plot
-
-ggsave("./results/seminar/wp_cmc.pdf",
-       device = cairo_pdf,
-       plot = wp_cmc_plot,
-       height = beamer_height,
-       width = beamer_width,
-       units = "cm")
+ggsave("./results/figure1.pdf", plot = wp_cmc_plot,
+       height = 3.5, width = 3.5, units = "in", dpi = 600)
 
 #######################################################################################
 # Now water status vs ignition delay plot
@@ -50,36 +47,34 @@ wp_ig <- ggplot(final_data, aes(wp, ignition_delay, color = display_name)) +
   dws_point + bestfit +
   xlab("Water potential (MPa)") +
   ylab("Ignition delay time (s)") +
-#  labs(tag = "(a)") +
+  labs(tag = "(a)") +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
-  prestheme.nogridlines +
-  theme(legend.text = element_text(face = "italic", size=axissz-2),
-        legend.position = c(0.20, 0.79),
-       plot.margin = margin(t=8,r=0,b=8,l=5))
-wp_ig
+  pubtheme +
+  theme(legend.text = element_text(face = "italic"),
+        legend.position = c(0.30, 0.80),
+        plot.margin = unit(c(4, 4, 4, 4), "pt"),  
+        plot.tag = element_text(size = 12, face = "bold"), 
+        plot.tag.position = c(0.02, 1),
+        axis.text = element_text(size = axissz, face = "bold"),
+        axis.title = element_text(size = textsize, face = "bold")) 
+
 
 cmc_ig <- ggplot(final_data, aes(cmc, ignition_delay, color = display_name)) +
   dws_point + bestfit +
   xlab("LFMC (%)") +
   ylab("") +
- # labs(tag = "(b)") +
+  labs(tag = "(b)") +
   scale_color_manual(name = "", values = schwilkcolors_wp_ig) + 
-  prestheme.nogridlines +
- theme(legend.position = "none",
-       axis.text.y = element_blank(),
-       plot.margin = margin(t=8,r=5,b=8,l=0))
+  pubtheme +
+  theme(legend.position = "none",
+        plot.margin = unit(c(4, 4, 4, 4), "pt"),  
+        plot.tag = element_text(size = 12, face = "bold"), 
+        plot.tag.position = c(0.02, 1),
+        axis.text = element_text(size = axissz, face = "bold"),
+        axis.title = element_text(size = textsize, face = "bold")) 
+ 
 
-combined_cmc_ig <- plot_grid(wp_ig,cmc_ig)
-
-combined_cmc_ig
-ggsave("./results/seminar/combined_cmc_ig.pdf",
-       device = cairo_pdf,
-       plot = combined_cmc_ig,
-       height = beamer_height,
-       width = beamer_width*1.5,
-       units = "cm")
-
-
+combined_cmc_ig <- wp_ig | cmc_ig
 
 #######################################################################################
 # Now water status vs heat release plot
