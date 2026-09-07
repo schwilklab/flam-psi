@@ -1,4 +1,4 @@
-,sample_id,disc1_pre,disc2_pre,disc1_post,disc2_post,max_temp,ig_delay,fresh_mass,dry_mass,wp,spcode
+,sample_id,disc1_pre,disc2_pre,disc1_post,disc2_post,max_temp,ignition_delay,fresh_mass,dry_mass,wp,spcode
 1,FOPU2CO07,152.5,142.6,149.6,131.4,150,1,0.6691,0.3104,-0.29,FOPU2
 2,FOPU2CO09,152,138.5,150.7,143.2,150.7,1,0.8224,0.4264,-0.59,FOPU2
 3,FOPU2CO08,149.6,146.7,146,128.1,151.1,1,0.9082,0.4319,-0.62,FOPU2

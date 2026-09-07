@@ -259,7 +259,7 @@ puja_species_wp_cmc <- puja_flam %>%
 
 puja_species_wp_ign_sensitivity <- puja_flam %>%
   nest(data =  c(-spcode, -display_name)) %>%
-  mutate(fit = map(data, ~ lm(ig_delay ~ wp, data = .x)),
+  mutate(fit = map(data, ~ lm(ignition_delay ~ wp, data = .x)),
          tidied = map(fit, broom::tidy)) %>%
   unnest(tidied) %>%
   filter(term == "wp") %>%
