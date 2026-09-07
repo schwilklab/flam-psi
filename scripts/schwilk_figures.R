@@ -6,6 +6,9 @@ library(xtable)
 library(patchwork)
 library(cowplot)
 
+source("./scripts/ggplot_themes.R")
+
+
 ###################################################################################
 # From colorful to black
 ###################################################################################
@@ -146,7 +149,9 @@ wp_ign_sens_dry_down <- ggplot(species_sum, aes(abs(dry_down_rate), wp_ign_sens)
         axis.text = element_text(size = axissz, face = "bold"),
         axis.title = element_text(size = textsize, face = "bold")) 
 
-cmc_heat_release_sens_dry_down <- ggplot(species_sum, aes(abs(dry_down_rate), abs(cmc_heat_rlease_sens))) +
+cmc_heat_release_sens_dry_down <- ggplot(species_sum,
+                                         aes(abs(dry_down_rate),
+                                             abs(cmc_heat_rlease_sens))) +
   geom_point(aes(color= display_name), size = 4, alpha=0.9, shape=16) +
   geom_smooth(method="lm", se = FALSE, size = 1.5, color = "black") +
   xlab("Shoot moisture loss rate (%/hr)") +
@@ -162,14 +167,14 @@ cmc_heat_release_sens_dry_down <- ggplot(species_sum, aes(abs(dry_down_rate), ab
         axis.text = element_text(size = axissz, face = "bold"),
         axis.title.x = element_text(size = textsize, face = "bold")) 
 
-combined_dry_down_ig_heat_release <-  wp_ign_sens_dry_down|cmc_heat_release_sens_dry_down
+combined_dry_down_ig_heat_release <-  wp_ign_sens_dry_down | cmc_heat_release_sens_dry_down
 
 ggsave("./results/figure3.pdf", plot = combined_dry_down_ig_heat_release,
        height = 5, width = 7.25, units = "in", dpi = 600)
 
-############################################################################################
+###############################################################################
 # Drydown plot
-############################################################################################
+###############################################################################
 
 fmc_time_plot <- ggplot(time_wp, aes(hours, fmc, color = display_name)) +
   geom_point(size = 3, alpha = 0.5, shape = 16) +
@@ -208,9 +213,9 @@ combined_fmc_wp_time <- wp_time_plot|fmc_time_plot
 ggsave("./results/combined_fmc_wp_time.pdf", plot = combined_fmc_wp_time,
        height = 5, width = 7.25, units = "in", dpi = 600)
 
-###################################################################################################
+###############################################################################
 # Correlation plot
-###################################################################################################
+###############################################################################
 
 traits_cor <- as.data.frame(traits_cor)
 p_mat <- ggcorrplot::cor_pmat(traits_cor)
@@ -230,7 +235,7 @@ ggsave("./results/corr_plot.pdf", plot =corr_plot,
        height = 6.5, width = 6.5, units = "in", dpi = 600)
 
 
-################################################################################
+###############################################################################
 # PCA plot, only for shoot flammability
 ###############################################################################
 

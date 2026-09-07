@@ -6,6 +6,9 @@ library(xtable)
 library(patchwork)
 library(cowplot)
 
+source("./scripts/ggplot_themes.R")
+
+
 ###################################################################################
 # From colorful to black
 ###################################################################################

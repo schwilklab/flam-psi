@@ -8,9 +8,6 @@
 # This steering script sources all of the non stand-lone code below to read in
 # data, conduct PCAs, fit models, build tables and figures.
 
-source("./scripts/ggplot_themes.R")
-
-
 #############################################################################
 # read, clean and merged all the data Produces "alldata"
 #############################################################################

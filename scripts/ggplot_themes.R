@@ -32,12 +32,13 @@ loadfonts()
 schwilkcolors <- c("#EC4E15", "#EE722E", "#D68D18", "#AF5F42", "#E3C477", 
                    "#A9B678", "#8F7955", "#4A4C4F", "#2C2A1D")
 lighter_colors <- c("#F28B6B", "#F4A46E", "#E6B94C", "#CFA78D", "#F0E0A0")
-schwilkcolors_extended <- c(schwilkcolors, lighter_colors)
+schwilkcolors_light_extended <- c(schwilkcolors, lighter_colors)
 
 # schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#437683", "#18B0D6")
 # schwilkcolors <- c("#D68D18", "#836B43", "#A0AE6A", "#362908", "#EC4E15")  # ?
-pujacolors <- c("#7F0000", "#A50F15", "#CB181D", "#E03424", "#EC4E15", "#EE722E", "#D68D18",
-                   "#E3C477", "#A9B678", "#8F7955", "#6B6254", "#4A4C4F")
+schwilkcolors_extended <- c("#7F0000", "#A50F15", "#CB181D", "#E03424", "#EC4E15",
+                "#EE722E", "#D68D18", "#E3C477", "#A9B678", "#8F7955",
+                "#6B6254", "#4A4C4F", "#2C2A1D", "#0B0B07")
 
 
 ## The ggplot theme for all figures.
@@ -55,7 +56,7 @@ ppi <- 300 # for raster formats
 ## Some specific geoms to add
 
 dws_point <-  geom_point(size=2, alpha=0.9, shape=16)
-bestfit <- geom_smooth(method="lm", se = FALSE, size = 1.5)
+bestfit <- geom_smooth(method="lm", se = FALSE, linewidth = 1.5)
 
 stat_sum_single <- function(fun, geom="point", ...) {
   stat_summary(fun.y=fun, geom=geom, size = 3, ...)
@@ -79,8 +80,8 @@ pubtheme <- theme_grey() +
         legend.spacing.y = NULL,
         legend.margin=margin(c(1,1,1,1)),
         legend.key.height = unit(smsize, "pt"),
-        panel.grid.major = element_line(colour = "grey90", size = 0.2),
-        panel.grid.minor = element_line(colour = "grey95", size = 0.5),
+        panel.grid.major = element_line(colour = "grey90", linewidth = 0.2),
+        panel.grid.minor = element_line(colour = "grey95", linewidth = 0.5),
         #    panel.grid.minor = element_blank(),
         #    panel.grid.major = element_blank(),
         strip.background = element_rect(fill = "grey80", colour = "grey50")      
