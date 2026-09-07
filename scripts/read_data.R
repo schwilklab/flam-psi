@@ -30,20 +30,24 @@ MASS_DISK_2 <- 53.21 # g
 ## Read all the data files
 ###############################################################################
 
-species <- read_csv("./data/2024/species.csv")
 
+species <- read_csv("./data/species.csv")
+
+## create a display name
+species <- species %>%
+  mutate(display_name = paste(substr(genus, 1,1), ". ", specific_epithet, sep=""))
+## %>%
+##   dplyr::select(spcode, display_name, scientific_name)
+
+# ?
 samples <-  read_csv("./data/combined/samples.csv") 
-
 water_potentials_fmc <- read_csv("./data/combined/wp_fmc.csv") 
-
 burn_trials <- read_csv("./data/combined/burn_trials.csv")
-
 burn_trials_weather <- read_csv("./data/combined/burn_trials_weather.csv")
-
 leaf_traits <- read_csv("./data/combined/leaf_traits.csv")
-
 juniperus_leaf_traits <- read_csv("./data/combined/juniperus_lma.csv")
 
+## What is this?
 time_wp <- read_csv("./data/2024/time_wp.csv")
 
 pv_summary <- read_csv("./data/2024/pv_curve_summary.csv")
@@ -52,18 +56,16 @@ drydown <- read_csv("./data/2023/shrub_drydown_test.csv")
 
 puja_flam <- read_csv("./data/puja/flam_2025_2026.csv")
 
-puja_species <- read_csv("./data/puja/species.csv")
 
 ###############################################################################
 ## Cleaning the data
 ##############################################################################
 
-species <- species %>%
-  mutate(display_name = paste(substr(genus, 1,1), ". ", specific_epithet, sep="")) %>%
-  dplyr::select(spcode, display_name, scientific_name)
+
 
 wp_fmc <- water_potentials_fmc %>%
   mutate(wp = -1*wp) %>%
+  # naming? lfmc usually means live fuel moisture content. Explain variable names.
   mutate(lfmc = ((leaf_fresh_mass - leaf_dry_mass)/leaf_dry_mass)*100) %>%
   mutate(lfmc = round(lfmc, 2)) %>%
   mutate(cmc = ((twig_leaf_fresh_mass - twig_leaf_dry_mass)/twig_leaf_dry_mass)*100) %>%
@@ -142,7 +144,7 @@ all_leaf_traits <- leaf_traits %>%
   right_join(ldmc_leaf_length, by = "sample_id") %>%
   right_join(lma_leaf_area, by = "sample_id") %>%
   mutate(lma = lma_dry/leaf_area) %>%
-  mutate(lma = round(lma, 3)) %>%
+  mutate(lma = round(lma, 3)) %>%  ## DWS: Why rounding?
   dplyr::select(- lma_dry)
 
 dim(all_leaf_traits)
@@ -157,9 +159,11 @@ time_wp <- time_wp %>%
   group_by(sample_id) %>%
   mutate(hours = as.numeric(difftime(date_time, first(date_time), units = "hours")),
          hours = round(hours, 2)) %>%
-  left_join(species, by = "spcode") %>%
-  dplyr::select(-scientific_name)
+  left_join(species, by = "spcode")
+## %>%
+##   dplyr::select(-scientific_name)
 
+## DWS: What is this below?  Explain.
 time_wp <- time_wp[-c(242:247),]
 
 pv_summary <- pv_summary %>%
@@ -195,6 +199,7 @@ alldata <- samples %>% full_join(wp_fmc) %>%
   full_join(all_leaf_traits) %>% full_join(burn_trials) %>%
   mutate(total_dry_mass = mass_pre*(twig_leaf_dry_mass/twig_leaf_fresh_mass)) %>%
   dplyr::select(- mass_pre, - twig_leaf_dry_mass, -twig_leaf_fresh_mass) %>%
+  ## DWS: Why are species removed/ Explain in comments
   filter(!spcode %in% c("CELAR", "QUVI", "FOPU2", "SEBE2")) %>%
   mutate(across(c(notes, sex), ~ replace_na(., ""))) %>%
   mutate(spcode = ifelse(sex == "female" & spcode == "JUPI", paste0(spcode, "F"), spcode)) %>%
@@ -232,7 +237,8 @@ puja_flam <- puja_flam %>%
   mutate(heat1 = (max_temp - disc1_pre) * MASS_DISK_1 * SPECIFIC_HEAT_AL,
          heat2 = (max_temp - disc2_pre) * MASS_DISK_2 * SPECIFIC_HEAT_AL,
          heat_release_j = (heat1 + heat2)/2,) %>% # This is same as ajb_flam_psi and will need to fix in Puja's paper
-  left_join(puja_species)
+  ## DWS: I do not understand this comment.
+  left_join(species)
 
 puja_flam$heat_release_j <- puja_flam$heat_release_j - min(puja_flam$heat_release_j, na.rm=TRUE)
 
